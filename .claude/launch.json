@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "petcare-web (vite dev)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5173
+    },
+    {
+      "name": "petcare-web (gateway BFF)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "gateway"],
+      "port": 4000
+    },
+    {
+      "name": "petcare-server-new (Nest dev, watch)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "../petcare-server-new", "run", "start:dev"],
+      "port": 5000
+    }
+  ]
+}
