@@ -15,11 +15,10 @@ export const AuthUserSchema = z.object({
   name: z.string(),
 }) satisfies z.ZodType<AuthUser>;
 
-/** Тело запроса регистрации. */
+/** Тело запроса регистрации. Backend RegisterAuthDto принимает только email и password. */
 export const RegisterRequestSchema = z.object({
   email: z.string(),
   password: z.string(),
-  name: z.string(),
 });
 
 /** Тело запроса входа. */

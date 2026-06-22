@@ -39,7 +39,7 @@ export const RegistrationPage = () => {
   const submitAccount = async (): Promise<void> => {
     if (!accountEmail || !accountPassword || !accountName) return;
     try {
-      await register({ email: accountEmail, password: accountPassword, name: accountName }).unwrap();
+      await register({ email: accountEmail, password: accountPassword }).unwrap();
       setAccountPhase('otp');
     } catch {
       /* error surfaced via registerError below */
