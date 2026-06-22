@@ -1,0 +1,53 @@
+:root {
+  --text: #172033;
+  --text-muted: #6b7a92;
+  --text-soft: #9fb0c8;
+  --line: #e2e9f2;
+  --surface: #eef3fa;
+  --white: #fff;
+
+  /* Theme vars — overridden per business type at runtime (see useBusinessTheme) */
+  --accent: #2f58b0;
+  --accent-light: #3d6fd6;
+  --accent-dark: #2f58b0;
+  --accent-tint: #e7eefb;
+  --accent-grad: linear-gradient(135deg, #3d6fd6, #2f58b0);
+  --cabinet-bg: #eef3fa;
+  --sidebar-border: #e2e9f2;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: 'Manrope', system-ui, sans-serif;
+  color: var(--text);
+  background: var(--surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, p { margin: 0; }
+button { font-family: inherit; }
+a { text-decoration: none; color: inherit; }
+
+.ms {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  -webkit-font-feature-settings: 'liga';
+}
+.ms--fill { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+
+@keyframes shimmer { 0% { background-position: -360px 0; } 100% { background-position: 360px 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0% { transform: scale(1); opacity: 0.7; } 70% { transform: scale(2.6); opacity: 0; } 100% { opacity: 0; } }

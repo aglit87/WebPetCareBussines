@@ -1,0 +1,45 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.mapCard { overflow: hidden; }
+.canvas {
+  position: relative;
+  height: 320px;
+  background:
+    linear-gradient(var(--accent-tint) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, var(--accent-tint) 1px, transparent 1px) 0 0 / 40px 40px,
+    $surface-2;
+}
+.pin {
+  position: absolute;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.4), 0 0 0 4px #fff;
+  cursor: default;
+}
+
+.cardTitle { font-family: $font-display; font-weight: 800; font-size: 14px; color: $text; margin-bottom: 12px; }
+.list { display: flex; flex-direction: column; gap: 10px; }
+.row { display: flex; align-items: center; gap: 12px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.rowMain { flex: 1; min-width: 0; }
+.rowTitle { font-family: $font-display; font-weight: 800; font-size: 13px; color: $text; @include ellipsis; }
+.rowSub { font-family: $font-body; font-weight: 500; font-size: 11px; color: $text-muted; }
+
+.state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 60px 24px; gap: 4px;
+  @include card;
+}
+.stateIcon {
+  width: 104px; height: 104px; border-radius: 32px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+}
+.stateTitle { font-family: $font-display; font-weight: 900; font-size: 22px; color: $text; }
+.stateText { font-family: $font-body; font-weight: 500; font-size: 14px; color: $text-muted; max-width: 380px; margin-bottom: 20px; line-height: 1.55; }

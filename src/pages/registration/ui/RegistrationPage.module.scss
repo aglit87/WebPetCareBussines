@@ -1,0 +1,98 @@
+.page {
+  height: 100vh;
+  display: flex;
+  background: #fff;
+  overflow: hidden;
+}
+
+.hero {
+  width: 42%;
+  flex: none;
+  position: relative;
+  overflow: hidden;
+  background: var(--accent-grad);
+  padding: 56px;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.brand { display: flex; align-items: center; gap: 14px; }
+.brandLogo {
+  width: 54px; height: 54px; border-radius: 16px;
+  background: rgba(255, 255, 255, 0.16);
+  display: flex; align-items: center; justify-content: center; flex: none;
+}
+.brandName { font-family: $font-display; font-weight: 900; font-size: 22px; }
+.brandKicker { font-family: $font-body; font-weight: 700; font-size: 11px; letter-spacing: 0.06em; color: rgba(255, 255, 255, 0.8); }
+
+.heroBody { margin-top: auto; }
+.dots { display: flex; gap: 8px; margin-bottom: 24px; }
+.dot { width: 14px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.4); transition: width 0.2s ease; }
+.dotActive { width: 40px; height: 6px; border-radius: 3px; background: #fff; }
+.heroTitle { font-family: $font-display; font-weight: 900; font-size: 40px; line-height: 1.14; letter-spacing: -0.02em; margin-bottom: 18px; max-width: 420px; }
+.heroText { font-family: $font-body; font-weight: 500; font-size: 16px; line-height: 1.6; color: rgba(255, 255, 255, 0.88); max-width: 400px; }
+.heroGlyph { position: absolute; right: -30px; bottom: -40px; color: rgba(255, 255, 255, 0.1); }
+
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 48px 60px;
+  min-width: 0;
+}
+
+.panelTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.stepTag {
+  font-family: $font-body; font-weight: 700; font-size: 12px;
+  color: var(--accent); background: var(--accent-tint);
+  padding: 6px 13px; border-radius: 9px;
+}
+.muted { font-family: $font-body; font-weight: 600; font-size: 13px; color: $text-muted; }
+.accentText { color: var(--accent); font-weight: 800; }
+.backBtn { display: flex; align-items: center; gap: 6px; border: none; background: transparent; font-family: $font-body; font-weight: 700; font-size: 13px; color: $text-muted; cursor: pointer; }
+
+.panelTitle { font-family: $font-display; font-weight: 900; font-size: 28px; letter-spacing: -0.02em; color: $text; margin: 18px 0 6px; }
+.panelSub { font-family: $font-body; font-weight: 500; font-size: 14px; color: $text-muted; margin-bottom: 24px; line-height: 1.5; }
+
+.grow { flex: 1; min-height: 0; }
+
+.field { display: block; margin-bottom: 22px; }
+.fieldLabel { display: block; font-family: $font-body; font-weight: 700; font-size: 12px; color: #5a6a82; margin-bottom: 8px; }
+.input {
+  display: flex; align-items: center; gap: 11px;
+  background: $surface-2; border: 1.5px solid $line; border-radius: $r-md; padding: 14px 16px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  &:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-tint); }
+  input { flex: 1; border: none; background: transparent; outline: none; font-family: $font-body; font-weight: 600; font-size: 15px; color: $text; }
+}
+
+.error { font-family: $font-body; font-weight: 600; font-size: 13px; color: $danger; margin: -8px 0 14px; }
+
+.servicesLabel { font-family: $font-body; font-weight: 700; font-size: 12px; color: #5a6a82; margin-bottom: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--accent-tint); color: var(--accent);
+  font-family: $font-body; font-weight: 700; font-size: 13px;
+  padding: 10px 16px; border-radius: 12px;
+}
+
+.success {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  .panelSub { max-width: 420px; }
+}
+.successIcon {
+  width: 104px; height: 104px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, var(--accent-tint), #fff);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 22px;
+  box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+@media (max-width: 900px) {
+  .hero { display: none; }
+  .panel { padding: 32px 24px; }
+  .panelTitle { font-size: 24px; }
+}

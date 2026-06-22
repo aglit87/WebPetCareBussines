@@ -1,0 +1,63 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.card {
+  position: relative;
+  text-align: left;
+  border: 1.5px solid $line;
+  background: #fff;
+  border-radius: $r-lg;
+  padding: 20px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+
+  &:hover { transform: translateY(-2px); }
+}
+
+.selected {
+  border: 2px solid var(--c);
+  background: color-mix(in srgb, var(--c) 5%, #fff);
+  box-shadow: 0 16px 34px -18px color-mix(in srgb, var(--c) 40%, transparent);
+}
+
+.check {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconBox {
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-family: $font-display;
+  font-weight: 900;
+  font-size: 17px;
+  color: $text;
+  margin-bottom: 5px;
+}
+
+.tagline {
+  display: block;
+  font-family: $font-body;
+  font-weight: 500;
+  font-size: 13px;
+  color: $text-muted;
+}

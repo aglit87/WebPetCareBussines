@@ -1,0 +1,40 @@
+// Design tokens — mirror of the approved mockups. SCSS-side only.
+// Runtime theming (per business type) is done with CSS custom properties.
+
+// Neutrals
+$text:        #172033;
+$text-muted:  #6b7a92;
+$text-soft:   #9fb0c8;
+$line:        #E2E9F2;
+$line-soft:   #F0F3F8;
+$surface:     #EEF3FA;
+$surface-2:   #F7FAFE;
+$white:       #fff;
+
+// Brand (default / vet)
+$brand:       #2F58B0;
+$brand-light: #3D6FD6;
+$brand-tint:  #E7EEFB;
+
+// Semantic
+$success:     #4F9A52;
+$success-tint:#E8F3E6;
+$warning:     #E8902B;
+$warning-tint:#FFF0DB;
+$danger:      #E5356A;
+$danger-tint: #FCE4EC;
+
+// Radii
+$r-sm: 10px;
+$r-md: 14px;
+$r-lg: 18px;
+$r-xl: 24px;
+
+// Fonts
+$font-display: 'Nunito', system-ui, sans-serif;
+$font-body:    'Manrope', system-ui, sans-serif;
+$font-mono:    'JetBrains Mono', monospace;
+
+// Shadows
+$shadow-card: 0 10px 24px -16px rgba(0, 0, 0, 0.16);
+$shadow-pop:  0 30px 70px -30px rgba(40, 66, 110, 0.5);

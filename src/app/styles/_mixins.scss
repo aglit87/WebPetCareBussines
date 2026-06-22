@@ -1,0 +1,26 @@
+@use 'variables' as *;
+
+@mixin card {
+  background: $white;
+  border-radius: $r-lg;
+  box-shadow: $shadow-card;
+}
+
+@mixin scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+@mixin tap {
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+  cursor: pointer;
+  &:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -14px rgba(31, 58, 110, 0.3); }
+  &:active { transform: scale(0.99); }
+}
+
+@mixin ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

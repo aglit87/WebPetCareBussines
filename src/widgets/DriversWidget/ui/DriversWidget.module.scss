@@ -1,0 +1,41 @@
+.wrap {
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  cursor: pointer;
+  & + & { border-top: 1px solid $line-soft; }
+  &:hover { background: $surface; }
+}
+.avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.rowMain { flex: 1; min-width: 0; }
+.rowTitle { font-family: $font-display; font-weight: 800; font-size: 14px; color: $text; @include ellipsis; }
+.rowSub { font-family: $font-body; font-weight: 500; font-size: 12px; color: $text-muted; @include ellipsis; }
+
+.rating {
+  display: flex; align-items: center; gap: 4px;
+  font-family: $font-display; font-weight: 800; font-size: 13px; color: $text;
+  flex-shrink: 0; width: 50px;
+}
+
+.state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 60px 24px; gap: 4px;
+  @include card;
+}
+.stateIcon {
+  width: 104px; height: 104px; border-radius: 32px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+}
+.stateTitle { font-family: $font-display; font-weight: 900; font-size: 22px; color: $text; }
+.stateText { font-family: $font-body; font-weight: 500; font-size: 14px; color: $text-muted; max-width: 380px; margin-bottom: 20px; line-height: 1.55; }

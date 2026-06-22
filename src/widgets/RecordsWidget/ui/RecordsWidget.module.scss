@@ -1,0 +1,58 @@
+.wrap {
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+
+.group {
+  padding: 18px 20px;
+  & + & { border-top: 1px solid $line-soft; }
+}
+.groupTitle {
+  font-family: $font-display;
+  font-weight: 800;
+  font-size: 13px;
+  color: $text-muted;
+  margin-bottom: 6px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  cursor: pointer;
+  border-radius: $r-sm;
+  margin: 0 -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  & + & { border-top: 1px solid $line-soft; }
+  &:hover { background: $surface; }
+}
+.time { font-family: $font-mono; font-weight: 700; font-size: 12px; color: var(--accent); width: 44px; flex-shrink: 0; }
+.avatar { width: 36px; height: 36px; border-radius: 11px; object-fit: cover; flex-shrink: 0; }
+.rowMain { flex: 1; min-width: 0; }
+.rowTitle { font-family: $font-display; font-weight: 800; font-size: 13px; color: $text; @include ellipsis; }
+.rowSub { font-family: $font-body; font-weight: 500; font-size: 11px; color: $text-muted; @include ellipsis; }
+.amount { font-family: $font-display; font-weight: 800; font-size: 13px; color: $text; flex-shrink: 0; }
+
+.state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 60px 24px; gap: 4px;
+  @include card;
+}
+.stateIcon {
+  width: 104px; height: 104px; border-radius: 32px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+}
+.stateTitle { font-family: $font-display; font-weight: 900; font-size: 22px; color: $text; }
+.stateText { font-family: $font-body; font-weight: 500; font-size: 14px; color: $text-muted; max-width: 380px; margin-bottom: 20px; line-height: 1.55; }
+
+@media (max-width: 640px) {
+  .row { flex-wrap: wrap; }
+  .amount { order: 5; margin-left: 48px; }
+}
