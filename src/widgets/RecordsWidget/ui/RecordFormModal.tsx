@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Modal, Button, Icon } from '@/shared/ui';
+import { Modal, Button, Icon, ConfirmDelete, FormError, DatePicker, AvatarUpload } from '@/shared/ui';
 import { useCreateRecordMutation, useUpdateRecordMutation, useDeleteRecordMutation, type RecordDTO, type RecordStatus } from '@/entities/records';
 import type { BusinessType } from '@/shared/config/businessTypes';
+import { getErrorMessage } from '@/shared/lib/getErrorMessage';
 import styles from './RecordFormModal.module.scss';
 
 interface Props {
@@ -19,6 +20,8 @@ const STATUS_OPTIONS: Array<{ value: RecordStatus; label: string }> = [
   { value: 'cancelled', label: 'Отменено' },
 ];
 
+const FALLBACK_AVATAR = 'https://api.dicebear.com/7.x/initials/svg?seed=PC';
+
 export const RecordFormModal = ({ open, type, record, onClose }: Props) => {
   const isEdit: boolean = !!record;
   const [date, setDate] = useState<string>(record?.date ?? 'Сегодня');
@@ -30,6 +33,7 @@ export const RecordFormModal = ({ open, type, record, onClose }: Props) => {
   const [status, setStatus] = useState<RecordStatus>(record?.status ?? 'later');
   const [avatar, setAvatar] = useState<string>(record?.avatar ?? '');
   const [confirmingDelete, setConfirmingDelete] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [createRecord, { isLoading: creating }] = useCreateRecordMutation();
   const [updateRecord, { isLoading: updating }] = useUpdateRecordMutation();
@@ -37,33 +41,45 @@ export const RecordFormModal = ({ open, type, record, onClose }: Props) => {
   const saving: boolean = creating || updating;
 
   const handleSave = async () => {
-    if (!pet.trim() || !client.trim() || !time.trim()) return;
+    setError(null);
     const payload = { date, time, pet, client, service, amount, status, avatar };
-    if (record) await updateRecord({ id: record.id, type, ...payload });
-    else await createRecord({ type, ...payload });
-    onClose();
+    try {
+      if (record) await updateRecord({ id: record.id, type, ...payload }).unwrap();
+      else await createRecord({ type, ...payload }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   const handleDelete = async () => {
     if (!record) return;
-    await deleteRecord({ id: record.id, type });
-    onClose();
+    setError(null);
+    try {
+      await deleteRecord({ id: record.id, type }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   return (
-    <Modal open={open} title={isEdit ? 'Изменить запись' : 'Новая запись'} onClose={onClose}>
+    <Modal open={open} title={isEdit ? 'Изменить запись' : 'Новая запись'} onClose={onClose} closeDisabled={saving || deleting}>
       {confirmingDelete ? (
-        <div className={styles.confirm}>
-          <p>Удалить запись «{record?.pet}»? Это действие нельзя отменить.</p>
-          <div className={styles.actions}>
-            <Button variant="secondary" onClick={() => setConfirmingDelete(false)}>Отмена</Button>
-            <Button onClick={handleDelete} disabled={deleting}>{deleting ? 'Удаление…' : 'Удалить'}</Button>
-          </div>
-        </div>
+        <ConfirmDelete
+          message={`Удалить запись «${record?.pet}»? Это действие нельзя отменить.`}
+          deleting={deleting}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={handleDelete}
+        />
       ) : (
         <>
+          <FormError message={error} />
           <div className={styles.row2}>
-            <label className={styles.field}><span>Дата</span><input value={date} onChange={(e) => setDate(e.target.value)} placeholder="Сегодня" /></label>
+            <label className={styles.field}>
+              <span>Дата</span>
+              <DatePicker value={date} onPick={setDate} placeholder="Выберите дату" />
+            </label>
             <label className={styles.field}><span>Время</span><input value={time} onChange={(e) => setTime(e.target.value)} placeholder="14:00" /></label>
           </div>
           <label className={styles.field}><span>Питомец</span><input value={pet} onChange={(e) => setPet(e.target.value)} placeholder="Мявра" /></label>
@@ -78,7 +94,7 @@ export const RecordFormModal = ({ open, type, record, onClose }: Props) => {
               </select>
             </label>
           </div>
-          <label className={styles.field}><span>Фото (URL)</span><input value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="https://…" /></label>
+          <AvatarUpload label="Фото питомца" value={avatar} onChange={setAvatar} fallback={FALLBACK_AVATAR} />
 
           <div className={styles.actions}>
             {isEdit && (

@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { Link, useNavigate, type NavigateFunction } from 'react-router-dom';
+import { Link, useLocation, useNavigate, type NavigateFunction } from 'react-router-dom';
 import { useLoginMutation } from '@/entities/auth';
 import { OtpConfirmForm } from '@/features/otp-confirm';
-import { Button, Icon } from '@/shared/ui';
+import { Button, Icon, PasswordInput } from '@/shared/ui';
 import styles from './LoginPage.module.scss';
 
 type Phase = 'credentials' | 'otp';
 
 export const LoginPage = () => {
   const navigate: NavigateFunction = useNavigate();
+  const location = useLocation();
+  const passwordResetDone = !!(location.state as { passwordResetDone?: boolean } | null)?.passwordResetDone;
   const [phase, setPhase] = useState<Phase>('credentials');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -36,6 +38,7 @@ export const LoginPage = () => {
           <>
             <h1 className={styles.title}>Вход в кабинет</h1>
             <p className={styles.sub}>Введите email и пароль — мы пришлём код подтверждения на почту</p>
+            {passwordResetDone && <p className={styles.success}>Пароль обновлён — войдите с новым паролем</p>}
             <label className={styles.field}>
               <span className={styles.fieldLabel}>Email</span>
               <div className={styles.input}>
@@ -44,13 +47,15 @@ export const LoginPage = () => {
               </div>
             </label>
             <label className={styles.field}>
-              <span className={styles.fieldLabel}>Пароль</span>
+              <div className={styles.fieldHead}>
+                <span className={styles.fieldLabel}>Пароль</span>
+                <Link to="/forgot-password" className={styles.forgotLink}>Забыли пароль?</Link>
+              </div>
               <div className={styles.input}>
                 <Icon name="lock" size={21} color="var(--accent)" />
-                <input
+                <PasswordInput
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
+                  onChange={setPassword}
                   placeholder="••••••••"
                   onKeyDown={(e) => { if (e.key === 'Enter') submit(); }}
                 />

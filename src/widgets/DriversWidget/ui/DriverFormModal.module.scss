@@ -43,12 +43,22 @@
 
 .deleteBtn { color: $danger; }
 
-.confirm {
-  p {
-    font-family: $font-body;
-    font-size: 14px;
-    color: $text;
-    line-height: 1.5;
-    margin: 0 0 18px;
-  }
+.posPreview {
+  position: relative;
+  height: 110px;
+  border-radius: $r-md;
+  background: $surface-2;
+  border: 1px solid $line-soft;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.posDot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  transform: translate(-50%, -50%);
 }

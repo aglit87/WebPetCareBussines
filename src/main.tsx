@@ -7,6 +7,7 @@ import { router } from '@/app/router';
 import { enableMocking } from '@/app/providers/enableMocking';
 import { AuthBootstrap } from '@/app/providers/AuthBootstrap';
 import '@/app/styles/global.scss';
+import 'petcare-storybook-ui/style.css';
 
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(

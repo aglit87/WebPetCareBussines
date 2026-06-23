@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Modal, Button, Icon } from '@/shared/ui';
+import { Modal, Button, Icon, ConfirmDelete, FormError, AvatarUpload } from '@/shared/ui';
 import { useCreateDriverMutation, useUpdateDriverMutation, useDeleteDriverMutation, type DriverDTO, type DriverStatus } from '@/entities/drivers';
 import type { BusinessType } from '@/shared/config/businessTypes';
+import { getErrorMessage } from '@/shared/lib/getErrorMessage';
 import styles from './DriverFormModal.module.scss';
 
 interface Props {
@@ -17,6 +18,8 @@ const STATUS_OPTIONS: Array<{ value: DriverStatus; label: string }> = [
   { value: 'offline', label: 'Не на смене' },
 ];
 
+const FALLBACK_AVATAR = 'https://api.dicebear.com/7.x/initials/svg?seed=PC';
+
 export const DriverFormModal = ({ open, type, driver, onClose }: Props) => {
   const isEdit: boolean = !!driver;
   const [name, setName] = useState<string>(driver?.name ?? '');
@@ -28,40 +31,53 @@ export const DriverFormModal = ({ open, type, driver, onClose }: Props) => {
   const [x, setX] = useState<number>(driver?.x ?? 50);
   const [y, setY] = useState<number>(driver?.y ?? 50);
   const [confirmingDelete, setConfirmingDelete] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [createDriver, { isLoading: creating }] = useCreateDriverMutation();
   const [updateDriver, { isLoading: updating }] = useUpdateDriverMutation();
   const [deleteDriver, { isLoading: deleting }] = useDeleteDriverMutation();
   const saving: boolean = creating || updating;
 
+  const clampedX = Math.min(100, Math.max(0, x));
+  const clampedY = Math.min(100, Math.max(0, y));
+
   const handleSave = async () => {
-    if (!name.trim() || !phone.trim()) return;
+    setError(null);
     const payload = { name, avatar, phone, status, tripsToday, rating, x, y };
-    if (driver) await updateDriver({ id: driver.id, type, ...payload });
-    else await createDriver({ type, ...payload });
-    onClose();
+    try {
+      if (driver) await updateDriver({ id: driver.id, type, ...payload }).unwrap();
+      else await createDriver({ type, ...payload }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   const handleDelete = async () => {
     if (!driver) return;
-    await deleteDriver({ id: driver.id, type });
-    onClose();
+    setError(null);
+    try {
+      await deleteDriver({ id: driver.id, type }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   return (
-    <Modal open={open} title={isEdit ? 'Изменить водителя' : 'Новый водитель'} onClose={onClose}>
+    <Modal open={open} title={isEdit ? 'Изменить водителя' : 'Новый водитель'} onClose={onClose} closeDisabled={saving || deleting}>
       {confirmingDelete ? (
-        <div className={styles.confirm}>
-          <p>Удалить водителя «{driver?.name}»? Это действие нельзя отменить.</p>
-          <div className={styles.actions}>
-            <Button variant="secondary" onClick={() => setConfirmingDelete(false)}>Отмена</Button>
-            <Button onClick={handleDelete} disabled={deleting}>{deleting ? 'Удаление…' : 'Удалить'}</Button>
-          </div>
-        </div>
+        <ConfirmDelete
+          message={`Удалить водителя «${driver?.name}»? Это действие нельзя отменить.`}
+          deleting={deleting}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={handleDelete}
+        />
       ) : (
         <>
+          <FormError message={error} />
+          <AvatarUpload label="Фото водителя" value={avatar} onChange={setAvatar} fallback={FALLBACK_AVATAR} />
           <label className={styles.field}><span>Имя</span><input value={name} onChange={(e) => setName(e.target.value)} placeholder="Павел Морозов" /></label>
-          <label className={styles.field}><span>Фото (URL)</span><input value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="https://…" /></label>
           <label className={styles.field}><span>Телефон</span><input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+7 900 000-00-00" /></label>
           <label className={styles.field}>
             <span>Статус</span>
@@ -70,12 +86,15 @@ export const DriverFormModal = ({ open, type, driver, onClose }: Props) => {
             </select>
           </label>
           <div className={styles.row2}>
-            <label className={styles.field}><span>Поездок сегодня</span><input type="number" value={tripsToday} onChange={(e) => setTripsToday(Number(e.target.value))} /></label>
+            <label className={styles.field}><span>Поездок сегодня</span><input type="number" min={0} value={tripsToday} onChange={(e) => setTripsToday(Number(e.target.value))} /></label>
             <label className={styles.field}><span>Рейтинг</span><input type="number" step="0.1" min="1" max="5" value={rating} onChange={(e) => setRating(Number(e.target.value))} /></label>
           </div>
           <div className={styles.row2}>
             <label className={styles.field}><span>Позиция X (0–100)</span><input type="number" min="0" max="100" value={x} onChange={(e) => setX(Number(e.target.value))} /></label>
             <label className={styles.field}><span>Позиция Y (0–100)</span><input type="number" min="0" max="100" value={y} onChange={(e) => setY(Number(e.target.value))} /></label>
+          </div>
+          <div className={styles.posPreview}>
+            <span className={styles.posDot} style={{ left: `${clampedX}%`, top: `${clampedY}%` }} />
           </div>
 
           <div className={styles.actions}>

@@ -6,8 +6,8 @@ import { getBusinessConfig, type BusinessType } from '@/shared/config/businessTy
 import { useBusinessTheme } from '@/shared/lib/useBusinessTheme';
 import { BusinessTypeSelect } from '@/features/business-type-select';
 import { OtpConfirmForm } from '@/features/otp-confirm';
-import { selectIsAuthenticated, useRegisterMutation } from '@/entities/auth';
-import { Button, Icon } from '@/shared/ui';
+import { isPasswordValid, PASSWORD_RULES, selectIsAuthenticated, useRegisterMutation } from '@/entities/auth';
+import { Button, Icon, PasswordInput } from '@/shared/ui';
 import styles from './RegistrationPage.module.scss';
 
 type WizardStep = 1 | 2 | 3;
@@ -25,8 +25,11 @@ export const RegistrationPage = () => {
   const [accountPhase, setAccountPhase] = useState<AccountPhase>('credentials');
   const [accountEmail, setAccountEmail] = useState<string>('');
   const [accountPassword, setAccountPassword] = useState<string>('');
+  const [accountPasswordConfirm, setAccountPasswordConfirm] = useState<string>('');
   const [accountName, setAccountName] = useState<string>('');
   const [register, { isLoading: registering, error: registerError }] = useRegisterMutation();
+  const accountPasswordValid = isPasswordValid(accountPassword);
+  const accountPasswordsMatch = accountPassword.length > 0 && accountPassword === accountPasswordConfirm;
 
   const [step, setStep] = useState<WizardStep>(1);
   const [type, setLocalType] = useState<BusinessType | null>(storedType);
@@ -37,7 +40,7 @@ export const RegistrationPage = () => {
   const dot = accountDone ? step + 1 : 1;
 
   const submitAccount = async (): Promise<void> => {
-    if (!accountEmail || !accountPassword || !accountName) return;
+    if (!accountEmail || !accountName || !accountPasswordValid || !accountPasswordsMatch) return;
     try {
       await register({ email: accountEmail, password: accountPassword, name: accountName }).unwrap();
       setAccountPhase('otp');
@@ -90,13 +93,17 @@ export const RegistrationPage = () => {
             <AccountStep
               email={accountEmail}
               password={accountPassword}
+              passwordConfirm={accountPasswordConfirm}
               accountName={accountName}
               onEmail={setAccountEmail}
               onPassword={setAccountPassword}
+              onPasswordConfirm={setAccountPasswordConfirm}
               onName={setAccountName}
               onNext={submitAccount}
               loading={registering}
               error={!!registerError}
+              passwordValid={accountPasswordValid}
+              passwordsMatch={accountPasswordsMatch}
             />
           ) : (
             <>
@@ -132,12 +139,13 @@ export const RegistrationPage = () => {
 };
 
 const AccountStep = ({
-  email, password, accountName, onEmail, onPassword, onName, onNext, loading, error,
+  email, password, passwordConfirm, accountName, onEmail, onPassword, onPasswordConfirm, onName, onNext, loading, error, passwordValid, passwordsMatch,
 }: {
-  email: string; password: string; accountName: string;
-  onEmail: (v: string) => void; onPassword: (v: string) => void; onName: (v: string) => void;
-  onNext: () => void; loading: boolean; error: boolean;
+  email: string; password: string; passwordConfirm: string; accountName: string;
+  onEmail: (v: string) => void; onPassword: (v: string) => void; onPasswordConfirm: (v: string) => void; onName: (v: string) => void;
+  onNext: () => void; loading: boolean; error: boolean; passwordValid: boolean; passwordsMatch: boolean;
 }) => {
+  const canSubmit = !!email && !!accountName && passwordValid && passwordsMatch && !loading;
   return (
     <>
       <div className={styles.panelTop}>
@@ -165,18 +173,43 @@ const AccountStep = ({
           <span className={styles.fieldLabel}>Пароль</span>
           <div className={styles.input}>
             <Icon name="lock" size={21} color="var(--accent)" />
-            <input
+            <PasswordInput
               value={password}
-              onChange={(e) => onPassword(e.target.value)}
-              type="password"
+              onChange={onPassword}
               placeholder="••••••••"
               onKeyDown={(e) => { if (e.key === 'Enter') onNext(); }}
             />
           </div>
         </label>
+        {password.length > 0 && (
+          <ul className={styles.rules}>
+            {PASSWORD_RULES.map((rule) => {
+              const ok = rule.test(password);
+              return (
+                <li key={rule.id} className={ok ? styles.ruleOk : styles.ruleFail}>
+                  <Icon name={ok ? 'check_circle' : 'cancel'} fill size={15} />
+                  {rule.label}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>Повторите пароль</span>
+          <div className={styles.input}>
+            <Icon name="lock" size={21} color="var(--accent)" />
+            <PasswordInput
+              value={passwordConfirm}
+              onChange={onPasswordConfirm}
+              placeholder="••••••••"
+              onKeyDown={(e) => { if (e.key === 'Enter') onNext(); }}
+            />
+          </div>
+        </label>
+        {passwordConfirm.length > 0 && !passwordsMatch && <p className={styles.error}>Пароли не совпадают</p>}
         {error && <p className={styles.error}>Не удалось создать аккаунт — проверьте данные или email уже занят</p>}
       </div>
-      <Button size="lg" fullWidth disabled={!email || !password || !accountName || loading} onClick={onNext}>
+      <Button size="lg" fullWidth disabled={!canSubmit} onClick={onNext}>
         {loading ? 'Отправляем код…' : 'Далее · подтвердить email'}
         <Icon name="arrow_forward" size={20} />
       </Button>

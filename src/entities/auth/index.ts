@@ -1,4 +1,4 @@
-export { authReducer, credentialsRequested, otpVerified, tokensRefreshed, loggedOut } from './model/slice';
+export { authReducer, credentialsRequested, otpVerified, tokensRefreshed, loggedOut, passwordResetCompleted } from './model/slice';
 export {
   selectAuthUser,
   selectAccessToken,
@@ -9,12 +9,16 @@ export {
   selectIsAuthenticated,
 } from './model/selectors';
 export type { AuthUser, AuthState, AuthStatus, OtpPurpose } from './model/types';
+export { PASSWORD_RULES, isPasswordValid } from './model/password';
+export type { PasswordRule } from './model/password';
 export {
   authApi,
   useRegisterMutation,
   useLoginMutation,
   useVerifyOtpMutation,
   useResendOtpMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
   useRefreshMutation,
   useLogoutMutation,
 } from './api/authApi';
@@ -23,6 +27,8 @@ export type {
   LoginRequest,
   VerifyOtpRequest,
   ResendOtpRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
   PendingAuthResponse,
   TokensResponse,
 } from './api/authApi';

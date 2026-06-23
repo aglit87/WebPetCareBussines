@@ -21,11 +21,31 @@ export const RoomsDTOSchema = z.object({
   rooms: z.array(RoomDTOSchema),
 }) satisfies z.ZodType<RoomsDTO>;
 
+/** Поля формы номера, проверяемые перед отправкой на сервер. */
+const RoomFormFieldsSchema = {
+  number: z.string().trim().min(1, 'Укажите номер'),
+  kind: z.string().trim().min(1, 'Укажите тип номера'),
+};
+
+/** Если номер занят — питомец, клиент и дата выезда обязательны. */
+const refineOccupied = <T extends z.ZodTypeAny>(schema: T) =>
+  schema.superRefine((value, ctx) => {
+    const v = value as { status: RoomStatus; pet?: string; client?: string; checkout?: string };
+    if (v.status !== 'occupied') return;
+    if (!v.pet?.trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Укажите питомца', path: ['pet'] });
+    if (!v.client?.trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Укажите клиента', path: ['client'] });
+    if (!v.checkout?.trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Укажите дату выезда', path: ['checkout'] });
+  });
+
 /** Тело запроса на создание номера. */
-export const CreateRoomRequestSchema = RoomDTOSchema.omit({ id: true }).extend({ type: BusinessTypeSchema });
+export const CreateRoomRequestSchema = refineOccupied(
+  RoomDTOSchema.omit({ id: true }).extend({ ...RoomFormFieldsSchema, type: BusinessTypeSchema }),
+);
 
 /** Тело запроса на обновление номера. */
-export const UpdateRoomRequestSchema = RoomDTOSchema.extend({ type: BusinessTypeSchema });
+export const UpdateRoomRequestSchema = refineOccupied(
+  RoomDTOSchema.extend({ ...RoomFormFieldsSchema, type: BusinessTypeSchema }),
+);
 
 /** Тело запроса на удаление номера. */
 export const DeleteRoomRequestSchema = z.object({ id: z.string(), type: BusinessTypeSchema });

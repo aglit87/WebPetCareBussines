@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Modal, Button, Icon } from '@/shared/ui';
+import { Modal, Button, Icon, ConfirmDelete, FormError } from '@/shared/ui';
 import { useCreateRoomMutation, useUpdateRoomMutation, useDeleteRoomMutation, type RoomDTO, type RoomStatus } from '@/entities/rooms';
 import type { BusinessType } from '@/shared/config/businessTypes';
+import { getErrorMessage } from '@/shared/lib/getErrorMessage';
 import styles from './RoomFormModal.module.scss';
 
 interface Props {
@@ -26,15 +27,16 @@ export const RoomFormModal = ({ open, type, room, onClose }: Props) => {
   const [client, setClient] = useState<string>(room?.client ?? '');
   const [checkout, setCheckout] = useState<string>(room?.checkout ?? '');
   const [confirmingDelete, setConfirmingDelete] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [createRoom, { isLoading: creating }] = useCreateRoomMutation();
   const [updateRoom, { isLoading: updating }] = useUpdateRoomMutation();
   const [deleteRoom, { isLoading: deleting }] = useDeleteRoomMutation();
   const saving: boolean = creating || updating;
+  const occupied: boolean = status === 'occupied';
 
   const handleSave = async () => {
-    if (!number.trim() || !kind.trim()) return;
-    const occupied: boolean = status === 'occupied';
+    setError(null);
     const payload = {
       number,
       kind,
@@ -43,29 +45,38 @@ export const RoomFormModal = ({ open, type, room, onClose }: Props) => {
       client: occupied ? client : undefined,
       checkout: occupied ? checkout : undefined,
     };
-    if (room) await updateRoom({ id: room.id, type, ...payload });
-    else await createRoom({ type, ...payload });
-    onClose();
+    try {
+      if (room) await updateRoom({ id: room.id, type, ...payload }).unwrap();
+      else await createRoom({ type, ...payload }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   const handleDelete = async () => {
     if (!room) return;
-    await deleteRoom({ id: room.id, type });
-    onClose();
+    setError(null);
+    try {
+      await deleteRoom({ id: room.id, type }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   return (
-    <Modal open={open} title={isEdit ? 'Изменить номер' : 'Новый номер'} onClose={onClose}>
+    <Modal open={open} title={isEdit ? 'Изменить номер' : 'Новый номер'} onClose={onClose} closeDisabled={saving || deleting}>
       {confirmingDelete ? (
-        <div className={styles.confirm}>
-          <p>Удалить номер «{room?.number}»? Это действие нельзя отменить.</p>
-          <div className={styles.actions}>
-            <Button variant="secondary" onClick={() => setConfirmingDelete(false)}>Отмена</Button>
-            <Button onClick={handleDelete} disabled={deleting}>{deleting ? 'Удаление…' : 'Удалить'}</Button>
-          </div>
-        </div>
+        <ConfirmDelete
+          message={`Удалить номер «${room?.number}»? Это действие нельзя отменить.`}
+          deleting={deleting}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={handleDelete}
+        />
       ) : (
         <>
+          <FormError message={error} />
           <div className={styles.row2}>
             <label className={styles.field}><span>Номер</span><input value={number} onChange={(e) => setNumber(e.target.value)} placeholder="№1" /></label>
             <label className={styles.field}><span>Тип</span><input value={kind} onChange={(e) => setKind(e.target.value)} placeholder="Стандартный" /></label>
@@ -92,7 +103,10 @@ export const RoomFormModal = ({ open, type, room, onClose }: Props) => {
             )}
             <div className={styles.spacer} />
             <Button variant="secondary" onClick={onClose}>Отмена</Button>
-            <Button onClick={handleSave} disabled={saving || !number.trim() || !kind.trim()}>
+            <Button
+              onClick={handleSave}
+              disabled={saving || !number.trim() || !kind.trim() || (occupied && (!pet.trim() || !client.trim() || !checkout.trim()))}
+            >
               {saving ? 'Сохранение…' : isEdit ? 'Сохранить' : 'Добавить'}
             </Button>
           </div>

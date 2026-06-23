@@ -24,8 +24,11 @@ export const ReviewsDTOSchema = z.object({
 export const UpdateReviewReplyRequestSchema = z.object({
   id: z.string(),
   type: BusinessTypeSchema,
-  reply: z.string(),
+  reply: z.string().trim().min(1, 'Введите текст ответа').max(500, 'Не более 500 символов'),
 });
+
+/** Максимальная длина ответа на отзыв — используется и для счётчика символов в форме. */
+export const REVIEW_REPLY_MAX_LENGTH = 500;
 
 /** Тело запроса на удаление отзыва. */
 export const DeleteReviewRequestSchema = z.object({ id: z.string(), type: BusinessTypeSchema });

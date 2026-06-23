@@ -4,7 +4,7 @@ import type { AuthUser, OtpPurpose } from './types';
 /**
  * Zod-схема причины запроса OTP-кода. Соответствует {@link OtpPurpose}.
  */
-export const OtpPurposeSchema = z.enum(['register', 'login']) satisfies z.ZodType<OtpPurpose>;
+export const OtpPurposeSchema = z.enum(['register', 'login', 'reset']) satisfies z.ZodType<OtpPurpose>;
 
 /**
  * Zod-схема пользователя. Соответствует {@link AuthUser}.
@@ -15,10 +15,19 @@ export const AuthUserSchema = z.object({
   name: z.string(),
 }) satisfies z.ZodType<AuthUser>;
 
+/** Пароль по best practice: 8+ символов, заглавная/строчная буква, цифра, спецсимвол. */
+export const PasswordSchema = z
+  .string()
+  .min(8, 'Минимум 8 символов')
+  .regex(/[a-z]/, 'Нужна строчная буква')
+  .regex(/[A-Z]/, 'Нужна заглавная буква')
+  .regex(/\d/, 'Нужна цифра')
+  .regex(/[^A-Za-z0-9]/, 'Нужен спецсимвол');
+
 /** Тело запроса регистрации. */
 export const RegisterRequestSchema = z.object({
   email: z.string(),
-  password: z.string(),
+  password: PasswordSchema,
   name: z.string(),
 });
 
@@ -27,6 +36,21 @@ export const LoginRequestSchema = z.object({
   email: z.string(),
   password: z.string(),
 });
+
+/** Тело запроса на восстановление пароля (отправка OTP-кода). */
+export const ForgotPasswordRequestSchema = z.object({
+  email: z.string(),
+});
+
+/** Тело запроса на установку нового пароля по коду из письма. */
+export const ResetPasswordRequestSchema = z.object({
+  email: z.string(),
+  code: z.string(),
+  password: PasswordSchema,
+});
+
+/** Ответ на установку нового пароля. */
+export const ResetPasswordResponseSchema = z.object({ ok: z.literal(true) });
 
 /** Тело запроса подтверждения OTP-кода. */
 export const VerifyOtpRequestSchema = z.object({

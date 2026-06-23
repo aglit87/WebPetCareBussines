@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Modal, Button, Icon } from '@/shared/ui';
+import { Modal, Button, Icon, ConfirmDelete, FormError } from '@/shared/ui';
 import { useCreateServiceMutation, useUpdateServiceMutation, useDeleteServiceMutation, type ServiceDTO } from '@/entities/services';
 import type { BusinessType } from '@/shared/config/businessTypes';
+import { getErrorMessage } from '@/shared/lib/getErrorMessage';
 import styles from './ServiceFormModal.module.scss';
 
 interface Props {
@@ -18,6 +19,7 @@ export const ServiceFormModal = ({ open, type, service, onClose }: Props) => {
   const [price, setPrice] = useState<string>(service?.price ?? '');
   const [durationMin, setDurationMin] = useState<number>(service?.durationMin ?? 30);
   const [confirmingDelete, setConfirmingDelete] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [createService, { isLoading: creating }] = useCreateServiceMutation();
   const [updateService, { isLoading: updating }] = useUpdateServiceMutation();
@@ -25,45 +27,57 @@ export const ServiceFormModal = ({ open, type, service, onClose }: Props) => {
   const saving: boolean = creating || updating;
 
   const handleSave = async () => {
-    if (!name.trim() || !price.trim()) return;
-    if (service) await updateService({ id: service.id, type, name, icon, price, durationMin });
-    else await createService({ type, name, icon, price, durationMin });
-    onClose();
+    setError(null);
+    try {
+      if (service) await updateService({ id: service.id, type, name, icon, price, durationMin }).unwrap();
+      else await createService({ type, name, icon, price, durationMin }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   const handleDelete = async () => {
     if (!service) return;
-    await deleteService({ id: service.id, type });
-    onClose();
+    setError(null);
+    try {
+      await deleteService({ id: service.id, type }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   return (
-    <Modal open={open} title={isEdit ? 'Изменить услугу' : 'Новая услуга'} onClose={onClose}>
+    <Modal open={open} title={isEdit ? 'Изменить услугу' : 'Новая услуга'} onClose={onClose} closeDisabled={saving || deleting}>
       {confirmingDelete ? (
-        <div className={styles.confirm}>
-          <p>Удалить «{service?.name}»? Это действие нельзя отменить.</p>
-          <div className={styles.actions}>
-            <Button variant="secondary" onClick={() => setConfirmingDelete(false)}>Отмена</Button>
-            <Button onClick={handleDelete} disabled={deleting}>{deleting ? 'Удаление…' : 'Удалить'}</Button>
-          </div>
-        </div>
+        <ConfirmDelete
+          message={`Удалить «${service?.name}»? Это действие нельзя отменить.`}
+          deleting={deleting}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={handleDelete}
+        />
       ) : (
         <>
+          <FormError message={error} />
           <label className={styles.field}>
             <span>Название</span>
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Осмотр терапевта" />
           </label>
-          <label className={styles.field}>
-            <span>Иконка (Material Symbols)</span>
-            <input value={icon} onChange={(e) => setIcon(e.target.value)} placeholder="stethoscope" />
-          </label>
+          <div className={styles.iconRow}>
+            <span className={styles.iconPreview}><Icon name={icon || 'help'} size={22} /></span>
+            <label className={styles.field}>
+              <span>Иконка (Material Symbols)</span>
+              <input value={icon} onChange={(e) => setIcon(e.target.value)} placeholder="stethoscope" />
+            </label>
+          </div>
           <label className={styles.field}>
             <span>Цена</span>
             <input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="800 ₽" />
           </label>
           <label className={styles.field}>
             <span>Длительность (мин)</span>
-            <input type="number" value={durationMin} onChange={(e) => setDurationMin(Number(e.target.value))} />
+            <input type="number" min={1} value={durationMin} onChange={(e) => setDurationMin(Number(e.target.value))} />
           </label>
 
           <div className={styles.actions}>
