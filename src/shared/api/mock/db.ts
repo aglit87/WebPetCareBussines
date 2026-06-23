@@ -2,7 +2,7 @@ import type { BusinessType } from '@/shared/config/businessTypes';
 import type { DashboardDTO } from '@/entities/dashboard';
 import type { RecordsDTO } from '@/entities/records';
 import type { ClientsDTO } from '@/entities/clients';
-import type { ScheduleDTO } from '@/entities/schedule';
+import type { ScheduleDTO, ScheduleMonthDTO, ScheduleSlotDTO } from '@/entities/schedule';
 import type { ServicesDTO } from '@/entities/services';
 import type { IncomeDTO } from '@/entities/income';
 import type { ReviewsDTO } from '@/entities/reviews';
@@ -188,50 +188,95 @@ export const setClientsDb = (next: Record<BusinessType, ClientsDTO>) => {
   savePersisted('clients', next);
 };
 
-// Per-type day schedule — backs the "Расписание" section (vet, grooming).
-const freeSlot = (time: string): { time: string; status: 'free' } => ({ time, status: 'free' });
-export const scheduleDb: Record<BusinessType, ScheduleDTO> = {
-  vet: {
-    date: 'Сегодня · вторник, 24 июня',
-    slots: [
-      freeSlot('09:00'), freeSlot('10:00'), freeSlot('11:00'), freeSlot('12:00'), freeSlot('13:00'),
-      { time: '14:00', status: 'busy', pet: 'Мявра', client: 'Анна Кузнецова', service: 'Осмотр терапевта' },
-      { time: '15:30', status: 'busy', pet: 'Рекс', client: 'Игорь Петров', service: 'Вакцинация' },
-      { time: '16:30', status: 'busy', pet: 'Барсик', client: 'Мария Соколова', service: 'УЗИ' },
-      freeSlot('18:00'), freeSlot('19:00'),
-    ],
-  },
-  grooming: {
-    date: 'Сегодня · вторник, 24 июня',
-    slots: [
-      freeSlot('09:00'), freeSlot('10:00'), freeSlot('11:00'),
-      { time: '12:00', status: 'busy', pet: 'Бьянка', client: 'Дарья Семёнова', service: 'Комплексный груминг' },
-      { time: '13:30', status: 'busy', pet: 'Рекс', client: 'Павел Кузьмин', service: 'Гигиеническая стрижка' },
-      freeSlot('14:30'),
-      { time: '15:00', status: 'busy', pet: 'Симба', client: 'Ольга Никитина', service: 'Тримминг' },
-      freeSlot('16:30'), freeSlot('17:30'), freeSlot('19:00'),
-    ],
-  },
-  boarding: {
-    date: 'Сегодня · вторник, 24 июня',
-    slots: [
-      freeSlot('09:00'), freeSlot('11:00'),
-      { time: '14:00', status: 'busy', pet: 'Гера', client: 'Олег Дроздов', service: 'Заезд · стандартный номер' },
-      freeSlot('15:30'),
-      { time: '16:30', status: 'busy', pet: 'Барсик', client: 'Мария Соколова', service: 'Заезд · номер «люкс»' },
-      { time: '17:00', status: 'busy', pet: 'Локи', client: 'Игорь Петров', service: 'Выезд · номер №3' },
-      freeSlot('19:00'),
-    ],
-  },
-  taxi: {
-    date: 'Сегодня · смена 09:00–21:00',
-    slots: [
-      freeSlot('09:00'), freeSlot('11:00'),
-      { time: '13:40', status: 'busy', pet: 'Рекс → ВетДоктор', client: 'Водитель Павел', service: 'Разовая поездка' },
-      { time: '14:10', status: 'busy', pet: 'Мявра → Груминг', client: 'Водитель Ирина', service: 'Сопровождение' },
-      freeSlot('16:00'), freeSlot('18:00'),
-    ],
-  },
+// Per-type day schedule — backs the "Расписание" section (vet, grooming, boarding, taxi).
+// Schedules aren't stored per-date; instead `generateDaySchedule` deterministically derives
+// a plausible day from (type, date) so every day in the calendar looks populated without
+// needing to seed months of fixture data by hand.
+const TIME_SLOTS: string[] = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
+
+const SCHEDULE_POOLS: Record<BusinessType, Omit<ScheduleSlotDTO, 'time' | 'status'>[]> = {
+  vet: [
+    { pet: 'Мявра', client: 'Анна Кузнецова', service: 'Осмотр терапевта' },
+    { pet: 'Рекс', client: 'Игорь Петров', service: 'Вакцинация' },
+    { pet: 'Барсик', client: 'Мария Соколова', service: 'УЗИ' },
+    { pet: 'Тоби', client: 'Сергей Орлов', service: 'Чипирование' },
+    { pet: 'Луна', client: 'Елена Фомина', service: 'Чистка зубов' },
+    { pet: 'Гера', client: 'Олег Дроздов', service: 'Анализы крови' },
+  ],
+  grooming: [
+    { pet: 'Бьянка', client: 'Дарья Семёнова', service: 'Комплексный груминг' },
+    { pet: 'Рекс', client: 'Павел Кузьмин', service: 'Гигиеническая стрижка' },
+    { pet: 'Симба', client: 'Ольга Никитина', service: 'Тримминг' },
+    { pet: 'Тоби', client: 'Мастер Дмитрий', service: 'Мытьё и сушка' },
+    { pet: 'Луна', client: 'Мастер Ольга', service: 'Комплексный груминг' },
+  ],
+  boarding: [
+    { pet: 'Гера', client: 'Олег Дроздов', service: 'Заезд · стандартный номер' },
+    { pet: 'Барсик', client: 'Мария Соколова', service: 'Заезд · номер «люкс»' },
+    { pet: 'Локи', client: 'Игорь Петров', service: 'Выезд · номер №3' },
+    { pet: 'Рекс', client: 'Анна Кузнецова', service: 'Доп. кормление' },
+  ],
+  taxi: [
+    { pet: 'Рекс → ВетДоктор', client: 'Водитель Павел', service: 'Разовая поездка' },
+    { pet: 'Мявра → Груминг', client: 'Водитель Ирина', service: 'Сопровождение' },
+    { pet: 'Барсик → Дом', client: 'Водитель Семён', service: 'Туда-обратно' },
+    { pet: 'Гера → клиника', client: 'Водитель Павел', service: 'Межгород' },
+  ],
+};
+
+// Deterministic string seed → PRNG (mulberry32), so the same (type, date) always
+// renders the same mock schedule across reloads instead of reshuffling on every fetch.
+const seededRandom = (seed: string): (() => number) => {
+  let h = 1779033703 ^ seed.length;
+  for (let i = 0; i < seed.length; i++) {
+    h = Math.imul(h ^ seed.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  return () => {
+    h = Math.imul(h ^ (h >>> 16), 2246822507);
+    h = Math.imul(h ^ (h >>> 13), 3266489909);
+    h ^= h >>> 16;
+    return (h >>> 0) / 4294967296;
+  };
+};
+
+const shuffled = <T,>(items: T[], rand: () => number): T[] => {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
+
+export const generateDaySchedule = (type: BusinessType, dateIso: string): ScheduleDTO => {
+  const pool = SCHEDULE_POOLS[type];
+  const weekday: number = new Date(`${dateIso}T00:00:00`).getDay();
+  const isWeekend: boolean = weekday === 0 || weekday === 6;
+  const rand = seededRandom(`${type}-${dateIso}`);
+  const maxBusy = Math.min(pool.length, isWeekend ? 3 : TIME_SLOTS.length);
+  const busyCount = Math.floor(rand() * (maxBusy + 1));
+  const busySlots = new Set(shuffled(TIME_SLOTS, rand).slice(0, busyCount));
+  const bookings = shuffled(pool, rand);
+
+  const slots: ScheduleSlotDTO[] = TIME_SLOTS.map((time) => {
+    if (!busySlots.has(time)) return { time, status: 'free' };
+    const booking = bookings[TIME_SLOTS.indexOf(time) % bookings.length];
+    return { time, status: 'busy', ...booking };
+  });
+  return { date: dateIso, slots };
+};
+
+export const generateMonthSchedule = (type: BusinessType, monthIso: string): ScheduleMonthDTO => {
+  const [y, m] = monthIso.split('-').map(Number);
+  const daysInMonth: number = new Date(y, m, 0).getDate();
+  const days = Array.from({ length: daysInMonth }, (_, i) => {
+    const date = `${monthIso}-${String(i + 1).padStart(2, '0')}`;
+    const { slots } = generateDaySchedule(type, date);
+    const busy = slots.filter((s) => s.status === 'busy').length;
+    return { date, busy, free: slots.length - busy };
+  });
+  return { days };
 };
 
 // Per-type services price list — backs the "Услуги" section (vet, grooming, boarding).

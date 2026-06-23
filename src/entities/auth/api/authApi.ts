@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { validateRequest, validateResponse } from '@/shared/lib/zod/apiValidation';
-import { credentialsRequested, loggedOut, otpVerified, tokensRefreshed } from '../model/slice';
+import { credentialsRequested, loggedOut, otpVerified, passwordResetCompleted, tokensRefreshed } from '../model/slice';
 import type { AuthUser, OtpPurpose } from '../model/types';
 import {
+  ForgotPasswordRequestSchema,
   LoginRequestSchema,
   LogoutRequestSchema,
   PendingAuthResponseSchema,
@@ -11,6 +12,8 @@ import {
   RegisterRequestSchema,
   ResendOtpRequestSchema,
   ResendOtpResponseSchema,
+  ResetPasswordRequestSchema,
+  ResetPasswordResponseSchema,
   TokensResponseSchema,
   VerifyOtpRequestSchema,
 } from '../model/schema';
@@ -39,6 +42,16 @@ export interface ResendOtpRequest {
 
 export interface PendingAuthResponse {
   email: string;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  code: string;
+  password: string;
 }
 
 export interface TokensResponse {
@@ -79,6 +92,22 @@ export const authApi = createApi({
       query: (body) => ({ url: '/auth/resend-otp', method: 'POST', body: validateRequest(ResendOtpRequestSchema, body) }),
       transformResponse: validateResponse(ResendOtpResponseSchema),
     }),
+    forgotPassword: build.mutation<PendingAuthResponse, ForgotPasswordRequest>({
+      query: (body) => ({ url: '/auth/forgot-password', method: 'POST', body: validateRequest(ForgotPasswordRequestSchema, body) }),
+      transformResponse: validateResponse(PendingAuthResponseSchema),
+      async onQueryStarted({ email }, { dispatch, queryFulfilled }) {
+        await queryFulfilled;
+        dispatch(credentialsRequested({ email, purpose: 'reset' }));
+      },
+    }),
+    resetPassword: build.mutation<{ ok: true }, ResetPasswordRequest>({
+      query: (body) => ({ url: '/auth/reset-password', method: 'POST', body: validateRequest(ResetPasswordRequestSchema, body) }),
+      transformResponse: validateResponse(ResetPasswordResponseSchema),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        await queryFulfilled;
+        dispatch(passwordResetCompleted());
+      },
+    }),
     refresh: build.mutation<{ accessToken: string; refreshToken: string }, { refreshToken: string }>({
       query: (body) => ({ url: '/auth/refresh', method: 'POST', body: validateRequest(RefreshRequestSchema, body) }),
       transformResponse: validateResponse(RefreshResponseSchema),
@@ -103,6 +132,8 @@ export const {
   useLoginMutation,
   useVerifyOtpMutation,
   useResendOtpMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
   useRefreshMutation,
   useLogoutMutation,
 } = authApi;

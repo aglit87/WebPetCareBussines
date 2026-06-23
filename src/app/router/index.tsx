@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { RegistrationPage } from '@/pages/registration';
 import { CabinetPage } from '@/pages/cabinet';
 import { LoginPage } from '@/pages/login';
+import { ForgotPasswordPage } from '@/pages/forgot-password';
 import { RequireAuth, RequireGuest } from '@/widgets/route-guards';
 
 export const router = createBrowserRouter([
@@ -11,4 +12,5 @@ export const router = createBrowserRouter([
   // land here too (via CabinetPage's redirect) and skip straight to Step 1.
   { path: '/register', element: <RegistrationPage /> },
   { path: '/login', element: <RequireGuest><LoginPage /></RequireGuest> },
+  { path: '/forgot-password', element: <RequireGuest><ForgotPasswordPage /></RequireGuest> },
 ]);

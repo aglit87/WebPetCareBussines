@@ -73,6 +73,39 @@ export const authHandlers = [
     return HttpResponse.json({ ok: true });
   }),
 
+  http.post('/api/auth/forgot-password', async ({ request }) => {
+    await delay(400);
+    const { email } = (await request.json()) as { email: string };
+    const user = authDb.users.find((u) => u.email === email);
+    if (user) {
+      const code = generateOtp();
+      setAuthDb({ ...authDb, otps: { ...authDb.otps, [email]: { code, purpose: 'reset', expiresAt: otpExpiry() } } });
+      console.log(`[mock email] OTP для ${email} (сброс пароля): ${code}`);
+    }
+    // Не подтверждаем существование email в ответе — иначе можно перебирать базу.
+    return HttpResponse.json({ email });
+  }),
+
+  http.post('/api/auth/reset-password', async ({ request }) => {
+    await delay(400);
+    const { email, code, password } = (await request.json()) as { email: string; code: string; password: string };
+    const entry = authDb.otps[email];
+    if (!entry || entry.purpose !== 'reset' || entry.code !== code || entry.expiresAt < Date.now()) {
+      return HttpResponse.json({ message: 'Неверный или просроченный код' }, { status: 400 });
+    }
+    const user = authDb.users.find((u) => u.email === email);
+    if (!user) {
+      return HttpResponse.json({ message: 'Пользователь не найден' }, { status: 404 });
+    }
+    const { [email]: _omit, ...restOtps } = authDb.otps;
+    setAuthDb({
+      ...authDb,
+      users: authDb.users.map((u) => (u.id === user.id ? { ...u, password } : u)),
+      otps: restOtps,
+    });
+    return HttpResponse.json({ ok: true });
+  }),
+
   http.post('/api/auth/refresh', async ({ request }) => {
     await delay(200);
     const { refreshToken } = (await request.json()) as { refreshToken: string };

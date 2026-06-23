@@ -35,12 +35,22 @@
 
 .deleteBtn { color: $danger; }
 
-.confirm {
-  p {
-    font-family: $font-body;
-    font-size: 14px;
-    color: $text;
-    line-height: 1.5;
-    margin: 0 0 18px;
-  }
+.iconRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+
+  .field { flex: 1; margin-bottom: 14px; }
+}
+
+.iconPreview {
+  width: 44px;
+  height: 44px;
+  border-radius: $r-md;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-tint);
+  color: var(--accent);
 }

@@ -1,4 +1,4 @@
-export type OtpPurpose = 'register' | 'login';
+export type OtpPurpose = 'register' | 'login' | 'reset';
 
 export interface AuthUser {
   id: string;

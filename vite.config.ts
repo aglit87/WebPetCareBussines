@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 
 const src = path.resolve(__dirname, 'src');
+const nodeModules = path.resolve(__dirname, 'node_modules');
 
 export default defineConfig({
   plugins: [react()],
@@ -13,8 +14,10 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         api: 'modern',
-        loadPaths: [src],
-        additionalData: `@use "app/styles/variables" as *;\n@use "app/styles/mixins" as *;\n`,
+        // Design tokens (colors, radii, fonts, shadows, mixins) live in the
+        // petcare-storybook-ui package — this app no longer keeps its own copy.
+        loadPaths: [src, nodeModules],
+        additionalData: `@use "petcare-storybook-ui/src/styles/variables" as *;\n@use "petcare-storybook-ui/src/styles/mixins" as *;\n`,
       },
     },
   },

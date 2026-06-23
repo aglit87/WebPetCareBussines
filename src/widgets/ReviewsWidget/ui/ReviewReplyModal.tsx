@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Modal, Button, Icon } from '@/shared/ui';
-import { useUpdateReviewReplyMutation, useDeleteReviewMutation, type ReviewDTO } from '@/entities/reviews';
+import { Modal, Button, Icon, ConfirmDelete, FormError } from '@/shared/ui';
+import { useUpdateReviewReplyMutation, useDeleteReviewMutation, REVIEW_REPLY_MAX_LENGTH, type ReviewDTO } from '@/entities/reviews';
 import type { BusinessType } from '@/shared/config/businessTypes';
+import { classNames } from '@/shared/lib/classNames';
+import { getErrorMessage } from '@/shared/lib/getErrorMessage';
 import styles from './ReviewReplyModal.module.scss';
 
 interface Props {
@@ -24,33 +26,46 @@ const Stars = ({ rating }: { rating: number }) => {
 export const ReviewReplyModal = ({ open, type, review, onClose }: Props) => {
   const [reply, setReply] = useState<string>(review?.reply ?? '');
   const [confirmingDelete, setConfirmingDelete] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const [updateReply, { isLoading: saving }] = useUpdateReviewReplyMutation();
   const [deleteReview, { isLoading: deleting }] = useDeleteReviewMutation();
 
   if (!review) return null;
 
+  const overLimit: boolean = reply.length > REVIEW_REPLY_MAX_LENGTH;
+
   const handleSaveReply = async () => {
-    await updateReply({ id: review.id, type, reply });
-    onClose();
+    setError(null);
+    try {
+      await updateReply({ id: review.id, type, reply }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   const handleDelete = async () => {
-    await deleteReview({ id: review.id, type });
-    onClose();
+    setError(null);
+    try {
+      await deleteReview({ id: review.id, type }).unwrap();
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   return (
-    <Modal open={open} title="Отзыв" onClose={onClose}>
+    <Modal open={open} title="Отзыв" onClose={onClose} closeDisabled={saving || deleting}>
       {confirmingDelete ? (
-        <div className={styles.confirm}>
-          <p>Удалить отзыв «{review.name}»? Это действие нельзя отменить.</p>
-          <div className={styles.actions}>
-            <Button variant="secondary" onClick={() => setConfirmingDelete(false)}>Отмена</Button>
-            <Button onClick={handleDelete} disabled={deleting}>{deleting ? 'Удаление…' : 'Удалить'}</Button>
-          </div>
-        </div>
+        <ConfirmDelete
+          message={`Удалить отзыв «${review.name}»? Это действие нельзя отменить.`}
+          deleting={deleting}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={handleDelete}
+        />
       ) : (
         <>
+          <FormError message={error} />
           <div className={styles.reviewHead}>
             <img src={review.avatar} alt="" className={styles.avatar} />
             <div className={styles.rowMain}>
@@ -62,7 +77,16 @@ export const ReviewReplyModal = ({ open, type, review, onClose }: Props) => {
 
           <label className={styles.field}>
             <span>Ответ от бизнеса</span>
-            <textarea rows={4} value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Спасибо за отзыв!" />
+            <textarea
+              rows={4}
+              maxLength={REVIEW_REPLY_MAX_LENGTH + 50}
+              value={reply}
+              onChange={(e) => setReply(e.target.value)}
+              placeholder="Спасибо за отзыв!"
+            />
+            <span className={classNames(styles.charCount, { [styles.charCountOver]: overLimit })}>
+              {reply.length} / {REVIEW_REPLY_MAX_LENGTH}
+            </span>
           </label>
 
           <div className={styles.actions}>
@@ -71,7 +95,7 @@ export const ReviewReplyModal = ({ open, type, review, onClose }: Props) => {
             </Button>
             <div className={styles.spacer} />
             <Button variant="secondary" onClick={onClose}>Отмена</Button>
-            <Button onClick={handleSaveReply} disabled={saving}>
+            <Button onClick={handleSaveReply} disabled={saving || !reply.trim() || overLimit}>
               {saving ? 'Сохранение…' : review.reply ? 'Изменить ответ' : 'Ответить'}
             </Button>
           </div>

@@ -68,8 +68,13 @@ const authSlice = createSlice({
       state.status = 'unauthenticated';
       persist(state);
     },
+    passwordResetCompleted(state) {
+      state.pendingEmail = null;
+      state.pendingPurpose = null;
+      state.status = 'unauthenticated';
+    },
   },
 });
 
-export const { credentialsRequested, otpVerified, tokensRefreshed, loggedOut } = authSlice.actions;
+export const { credentialsRequested, otpVerified, tokensRefreshed, loggedOut, passwordResetCompleted } = authSlice.actions;
 export const authReducer = authSlice.reducer;

@@ -39,6 +39,8 @@
   position: relative;
   width: 42px;
   height: 42px;
+  min-width: 42px;
+  overflow: hidden;
   border-radius: 12px;
   background: $surface-2;
   border: 1px solid $line;

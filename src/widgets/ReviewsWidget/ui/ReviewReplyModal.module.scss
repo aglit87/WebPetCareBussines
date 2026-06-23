@@ -55,12 +55,11 @@
 
 .deleteBtn { color: $danger; }
 
-.confirm {
-  p {
-    font-family: $font-body;
-    font-size: 14px;
-    color: $text;
-    line-height: 1.5;
-    margin: 0 0 18px;
-  }
+.charCount {
+  align-self: flex-end;
+  font-family: $font-body;
+  font-weight: 600;
+  font-size: 11px;
+  color: $text-soft;
 }
+.charCountOver { color: $danger; }

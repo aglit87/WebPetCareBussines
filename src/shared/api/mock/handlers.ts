@@ -4,7 +4,7 @@ import {
   dashboardDb,
   recordsDb, setRecordsDb,
   clientsDb, setClientsDb,
-  scheduleDb,
+  generateDaySchedule, generateMonthSchedule,
   servicesDb, setServicesDb,
   incomeDb,
   reviewsDb, setReviewsDb,
@@ -93,7 +93,24 @@ export const handlers = [
   mockEndpoint('dashboard', () => dashboardDb),
   mockEndpoint('records', () => recordsDb), ...mockCrud('records', 'records', () => recordsDb, setRecordsDb),
   mockEndpoint('clients', () => clientsDb), ...mockCrud('clients', 'clients', () => clientsDb, setClientsDb),
-  mockEndpoint('schedule', () => scheduleDb),
+  http.get('/api/schedule', async ({ request }) => {
+    const authError: HttpResponse<{ message: string }> | null = requireAuth(request);
+    if (authError) return authError;
+    await delay(400);
+    const url: URL = new URL(request.url);
+    const type: BusinessType = (url.searchParams.get('type') as BusinessType) ?? 'vet';
+    const date: string = url.searchParams.get('date') ?? new Date().toISOString().slice(0, 10);
+    return HttpResponse.json(generateDaySchedule(type, date));
+  }),
+  http.get('/api/schedule/month', async ({ request }) => {
+    const authError: HttpResponse<{ message: string }> | null = requireAuth(request);
+    if (authError) return authError;
+    await delay(400);
+    const url: URL = new URL(request.url);
+    const type: BusinessType = (url.searchParams.get('type') as BusinessType) ?? 'vet';
+    const month: string = url.searchParams.get('month') ?? new Date().toISOString().slice(0, 7);
+    return HttpResponse.json(generateMonthSchedule(type, month));
+  }),
   mockEndpoint('services', () => servicesDb), ...mockCrud('services', 'services', () => servicesDb, setServicesDb),
   mockEndpoint('income', () => incomeDb),
   mockEndpoint('reviews', () => reviewsDb),
