@@ -1,4 +1,4 @@
-export { businessReducer, setType, updateProfile, completeRegistration, resetBusiness } from './model/slice';
+export { businessReducer, businessInitialState, setType, updateProfile, completeRegistration, resetBusiness } from './model/slice';
 export {
   selectBusinessType,
   selectBusinessProfile,

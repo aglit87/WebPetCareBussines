@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { baseQueryWithReauth } from '@/shared/api/baseQueryWithReauth';
+import { reauthBaseQuery } from '@/entities/auth';
 import { validateRequest, validateResponse } from '@/shared/lib/zod/apiValidation';
 import type { BusinessType } from '@/shared/config/businessTypes';
 import type { ReviewDTO, ReviewsDTO } from '../model/types';
@@ -15,7 +15,7 @@ export type UpdateReviewReplyRequest = { id: string; type: BusinessType; reply: 
 
 export const reviewsApi = createApi({
   reducerPath: 'reviewsApi',
-  baseQuery: baseQueryWithReauth,
+  baseQuery: reauthBaseQuery,
   tagTypes: ['Review'],
   endpoints: (build) => ({
     getReviews: build.query<ReviewsDTO, BusinessType>({

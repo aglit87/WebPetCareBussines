@@ -1,0 +1,279 @@
+[10:19:40.759] [INFO] This command is running via an AI agent: claude-code_2-1-181_agent. Proceeding with agentic installation flow.
+[10:19:41.212] [INFO] [36mInitializing Storybook[39m
+[10:19:41.566] [DEBUG] Getting package.json info for D:/Develop/petcare-web/package.json...
+[10:19:41.566] [INFO] Package manager: npm
+[10:19:41.567] [DEBUG] Getting CLI versions from NPM for storybook...
+[10:19:41.567] [DEBUG] Executing command: npm info storybook version
+[10:19:41.568] [DEBUG] Resolved command variation: npm.cmd
+[10:19:42.249] [INFO] Adding Storybook version 10.4.6 to your project
+[10:19:42.250] [DEBUG] Executing command: npm config get min-release-age --workspaces=false --include-workspace-root
+[10:19:42.251] [DEBUG] Resolved command variation: npm.cmd
+[10:19:42.450] [INFO] Installing Storybook for user specified project type: react
+[10:19:42.450] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:42.451] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:42.451] [INFO] Framework detected: react-vite
+[10:19:42.452] [DEBUG] Getting installed version for vitest...
+[10:19:42.453] [DEBUG] Executing command: npm ls --json --depth=99 2>NUL
+[10:19:42.454] [DEBUG] Resolved command variation: npm.cmd
+[10:19:42.854] [DEBUG] Executing command: npm ls --json --depth=0 2>NUL
+[10:19:42.854] [DEBUG] Resolved command variation: npm.cmd
+[10:19:43.245] [DEBUG] Error finding installations for vitest: ExecaError: Command failed with exit code 1: npm.cmd ls --json "--depth=0" "2>NUL"
+
+npm error code EINVALIDTAGNAME
+npm error Invalid tag name "2>NUL" of package "2>NUL": Tags may not have any characters that encodeURIComponent encodes.
+npm error A complete log of this run can be found in: C:\Users\aglit\AppData\Local\npm-cache\_logs\2026-06-23T07_19_43_013Z-debug-0.log
+
+{
+  "error": {
+    "code": "EINVALIDTAGNAME",
+    "summary": "Invalid tag name \"2>NUL\" of package \"2>NUL\": Tags may not have any characters that encodeURIComponent encodes.",
+    "detail": ""
+  }
+}
+[10:19:43.245] [DEBUG] No installations found for vitest
+[10:19:43.245] [DEBUG] Getting installed version for msw...
+[10:19:43.245] [DEBUG] Executing command: npm ls --json --depth=99 2>NUL
+[10:19:43.246] [DEBUG] Resolved command variation: npm.cmd
+[10:19:43.645] [DEBUG] Executing command: npm ls --json --depth=0 2>NUL
+[10:19:43.646] [DEBUG] Resolved command variation: npm.cmd
+[10:19:44.039] [DEBUG] Error finding installations for msw: ExecaError: Command failed with exit code 1: npm.cmd ls --json "--depth=0" "2>NUL"
+
+npm error code EINVALIDTAGNAME
+npm error Invalid tag name "2>NUL" of package "2>NUL": Tags may not have any characters that encodeURIComponent encodes.
+npm error A complete log of this run can be found in: C:\Users\aglit\AppData\Local\npm-cache\_logs\2026-06-23T07_19_43_803Z-debug-0.log
+
+{
+  "error": {
+    "code": "EINVALIDTAGNAME",
+    "summary": "Invalid tag name \"2>NUL\" of package \"2>NUL\": Tags may not have any characters that encodeURIComponent encodes.",
+    "detail": ""
+  }
+}
+[10:19:44.039] [DEBUG] No installations found for msw
+[10:19:44.041] [INFO] Storybook collects completely anonymous usage telemetry. We use it to shape Storybook's roadmap and prioritize features. You can learn more, including how to opt out, at https://storybook.js.org/telemetry
+[10:19:44.505] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:44.505] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:44.505] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:44.505] [DEBUG] Using cached version for storybook...
+[10:19:44.505] [DEBUG] Getting CLI versions from NPM for @storybook/react-vite...
+[10:19:44.505] [DEBUG] Executing command: npm info @storybook/react-vite version
+[10:19:44.506] [DEBUG] Resolved command variation: npm.cmd
+[10:19:44.520] [DEBUG] Getting CLI versions from NPM for @chromatic-com/storybook...
+[10:19:44.520] [DEBUG] Executing command: npm info @chromatic-com/storybook version
+[10:19:44.521] [DEBUG] Resolved command variation: npm.cmd
+[10:19:44.535] [DEBUG] Getting CLI versions from NPM for @storybook/addon-vitest...
+[10:19:44.535] [DEBUG] Executing command: npm info @storybook/addon-vitest version
+[10:19:44.536] [DEBUG] Resolved command variation: npm.cmd
+[10:19:44.552] [DEBUG] Getting CLI versions from NPM for @storybook/addon-a11y...
+[10:19:44.552] [DEBUG] Executing command: npm info @storybook/addon-a11y version
+[10:19:44.553] [DEBUG] Resolved command variation: npm.cmd
+[10:19:44.570] [DEBUG] Getting CLI versions from NPM for @storybook/addon-docs...
+[10:19:44.570] [DEBUG] Executing command: npm info @storybook/addon-docs version
+[10:19:44.571] [DEBUG] Resolved command variation: npm.cmd
+[10:19:44.591] [DEBUG] Getting CLI versions from NPM for @storybook/addon-mcp...
+[10:19:44.591] [DEBUG] Executing command: npm info @storybook/addon-mcp version
+[10:19:44.592] [DEBUG] Resolved command variation: npm.cmd
+[10:19:45.904] [INFO] - Configuring main.ts
+[10:19:45.905] [INFO] - Configuring preview.ts
+[10:19:45.906] [INFO] - Adding Storybook command to package.json
+[10:19:45.906] [DEBUG] Getting package.json info for D:/Develop/petcare-web/package.json...
+[10:19:45.906] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:45.906] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:45.906] [INFO] - Copying framework templates
+[10:19:45.966] [DEBUG] Executing command: npm config get registry --workspaces=false --include-workspace-root
+[10:19:45.966] [DEBUG] Resolved command variation: npm.cmd
+[10:19:46.425] [INFO] Storybook configuration generated
+[10:19:46.425] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:46.425] [DEBUG] Using cached installed version for vitest...
+[10:19:46.425] [DEBUG] Getting installed version for @vitest/coverage-v8...
+[10:19:46.425] [DEBUG] Executing command: npm ls --json --depth=99 2>NUL
+[10:19:46.426] [DEBUG] Resolved command variation: npm.cmd
+[10:19:46.850] [DEBUG] Executing command: npm ls --json --depth=0 2>NUL
+[10:19:46.851] [DEBUG] Resolved command variation: npm.cmd
+[10:19:47.257] [DEBUG] Error finding installations for @vitest/coverage-v8: ExecaError: Command failed with exit code 1: npm.cmd ls --json "--depth=0" "2>NUL"
+
+npm error code EINVALIDTAGNAME
+npm error Invalid tag name "2>NUL" of package "2>NUL": Tags may not have any characters that encodeURIComponent encodes.
+npm error A complete log of this run can be found in: C:\Users\aglit\AppData\Local\npm-cache\_logs\2026-06-23T07_19_47_011Z-debug-0.log
+
+{
+  "error": {
+    "code": "EINVALIDTAGNAME",
+    "summary": "Invalid tag name \"2>NUL\" of package \"2>NUL\": Tags may not have any characters that encodeURIComponent encodes.",
+    "detail": ""
+  }
+}
+[10:19:47.257] [DEBUG] No installations found for @vitest/coverage-v8
+[10:19:47.257] [DEBUG] Getting installed version for @vitest/coverage-istanbul...
+[10:19:47.257] [DEBUG] Executing command: npm ls --json --depth=99 2>NUL
+[10:19:47.258] [DEBUG] Resolved command variation: npm.cmd
+[10:19:47.647] [DEBUG] Executing command: npm ls --json --depth=0 2>NUL
+[10:19:47.648] [DEBUG] Resolved command variation: npm.cmd
+[10:19:48.045] [DEBUG] Error finding installations for @vitest/coverage-istanbul: ExecaError: Command failed with exit code 1: npm.cmd ls --json "--depth=0" "2>NUL"
+
+npm error code EINVALIDTAGNAME
+npm error Invalid tag name "2>NUL" of package "2>NUL": Tags may not have any characters that encodeURIComponent encodes.
+npm error A complete log of this run can be found in: C:\Users\aglit\AppData\Local\npm-cache\_logs\2026-06-23T07_19_47_812Z-debug-0.log
+
+{
+  "error": {
+    "code": "EINVALIDTAGNAME",
+    "summary": "Invalid tag name \"2>NUL\" of package \"2>NUL\": Tags may not have any characters that encodeURIComponent encodes.",
+    "detail": ""
+  }
+}
+[10:19:48.045] [DEBUG] No installations found for @vitest/coverage-istanbul
+[10:19:48.045] [INFO] Adding devDependencies:
+- storybook@^10.4.6
+- @storybook/react-vite@^10.4.6
+- @chromatic-com/storybook@^5.2.1
+- @storybook/addon-vitest@^10.4.6
+- @storybook/addon-a11y@^10.4.6
+- @storybook/addon-docs@^10.4.6
+- @storybook/addon-mcp@^0.6.0
+- vitest
+- playwright
+- @vitest/browser-playwright
+- @vitest/coverage-v8
+[10:19:48.046] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:48.046] [DEBUG] Using cached version for storybook...
+[10:19:48.046] [DEBUG] Using cached version for @storybook/react-vite...
+[10:19:48.046] [DEBUG] Using cached version for @chromatic-com/storybook...
+[10:19:48.046] [DEBUG] Using cached version for @storybook/addon-vitest...
+[10:19:48.046] [DEBUG] Using cached version for @storybook/addon-a11y...
+[10:19:48.046] [DEBUG] Using cached version for @storybook/addon-docs...
+[10:19:48.046] [DEBUG] Using cached version for @storybook/addon-mcp...
+[10:19:48.046] [DEBUG] Getting CLI versions from NPM for vitest...
+[10:19:48.046] [DEBUG] Executing command: npm info vitest version
+[10:19:48.046] [DEBUG] Resolved command variation: npm.cmd
+[10:19:48.747] [DEBUG] Getting CLI versions from NPM for playwright...
+[10:19:48.747] [DEBUG] Executing command: npm info playwright version
+[10:19:48.747] [DEBUG] Resolved command variation: npm.cmd
+[10:19:50.675] [DEBUG] Getting CLI versions from NPM for @vitest/browser-playwright...
+[10:19:50.675] [DEBUG] Executing command: npm info @vitest/browser-playwright version
+[10:19:50.676] [DEBUG] Resolved command variation: npm.cmd
+[10:19:51.246] [DEBUG] Getting CLI versions from NPM for @vitest/coverage-v8...
+[10:19:51.246] [DEBUG] Executing command: npm info @vitest/coverage-v8 version
+[10:19:51.247] [DEBUG] Resolved command variation: npm.cmd
+[10:19:51.826] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:19:51.826] [INFO] Dependencies added to package.json
+[10:19:51.827] [INFO] Installing dependencies...
+[10:19:51.827] [INFO] Installing dependencies...
+[10:19:51.827] [DEBUG] Executing command: npm install
+[10:19:51.828] [DEBUG] Resolved command variation: npm.cmd
+[10:20:06.038] [INFO] Installing dependencies...: 
+added 189 packages, removed 86 packages, changed 3 packages, and audited 338 packages in 14s
+
+[10:20:06.038] [INFO] Installing dependencies...: added 189 packages, remov
+[10:20:06.038] [INFO] Installing dependencies...: 
+79 packages are looking for funding
+  run `npm fund` for details
+
+[10:20:06.038] [INFO] Installing dependencies...: 79 packages are looking f
+[10:20:06.042] [INFO] Installing dependencies...: 
+2 vulnerabilities (1 moderate, 1 high)
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+[10:20:06.042] [INFO] Installing dependencies...: 2 vulnerabilities (1 mode
+[10:20:06.073] [INFO] Dependencies installed
+[10:20:06.073] [INFO] Dependencies installed
+[10:20:06.079] [INFO] Configuring @chromatic-com/storybook...
+[10:20:06.083] [INFO] @chromatic-com/storybook configured
+
+[10:20:06.083] [INFO] Configuring @storybook/addon-vitest...
+[10:20:06.084] [DEBUG] Getting package.json info for D:/Develop/petcare-web/package.json...
+[10:20:06.084] [DEBUG] Using cached package.json for D:\Develop\petcare-web\package.json...
+[10:20:06.084] [DEBUG] Getting installed version for vitest...
+[10:20:06.084] [DEBUG] Executing command: npm ls --json --depth=99 2>NUL
+[10:20:06.085] [DEBUG] Resolved command variation: npm.cmd
+[10:20:06.506] [DEBUG] Executing command: npm ls --json --depth=0 2>NUL
+[10:20:06.507] [DEBUG] Resolved command variation: npm.cmd
+[10:20:06.904] [DEBUG] Error finding installations for vitest: ExecaError: Command failed with exit code 1: npm.cmd ls --json "--depth=0" "2>NUL"
+
+npm error code EINVALIDTAGNAME
+npm error Invalid tag name "2>NUL" of package "2>NUL": Tags may not have any characters that encodeURIComponent encodes.
+npm error A complete log of this run can be found in: C:\Users\aglit\AppData\Local\npm-cache\_logs\2026-06-23T07_20_06_673Z-debug-0.log
+
+{
+  "error": {
+    "code": "EINVALIDTAGNAME",
+    "summary": "Invalid tag name \"2>NUL\" of package \"2>NUL\": Tags may not have any characters that encodeURIComponent encodes.",
+    "detail": ""
+  }
+}
+[10:20:06.904] [DEBUG] No installations found for vitest
+[10:20:06.904] [DEBUG] Vitest version specifier: 4.1.9
+[10:20:06.975] [DEBUG] Using cached installed version for vitest...
+[10:20:06.975] [DEBUG] Getting installed version for msw...
+[10:20:06.975] [DEBUG] Executing command: npm ls --json --depth=99 2>NUL
+[10:20:06.976] [DEBUG] Resolved command variation: npm.cmd
+[10:20:07.382] [DEBUG] Executing command: npm ls --json --depth=0 2>NUL
+[10:20:07.383] [DEBUG] Resolved command variation: npm.cmd
+[10:20:07.786] [DEBUG] Error finding installations for msw: ExecaError: Command failed with exit code 1: npm.cmd ls --json "--depth=0" "2>NUL"
+
+npm error code EINVALIDTAGNAME
+npm error Invalid tag name "2>NUL" of package "2>NUL": Tags may not have any characters that encodeURIComponent encodes.
+npm error A complete log of this run can be found in: C:\Users\aglit\AppData\Local\npm-cache\_logs\2026-06-23T07_20_07_548Z-debug-0.log
+
+{
+  "error": {
+    "code": "EINVALIDTAGNAME",
+    "summary": "Invalid tag name \"2>NUL\" of package \"2>NUL\": Tags may not have any characters that encodeURIComponent encodes.",
+    "detail": ""
+  }
+}
+[10:20:07.786] [DEBUG] No installations found for msw
+[10:20:07.808] [INFO] Updating your Vite config file:
+[10:20:07.808] [INFO]   D:\Develop\petcare-web\vite.config.ts
+[10:20:07.814] [INFO] Setting up a11y addon for @storybook/addon-vitest
+[10:20:07.814] [INFO] Setting up a11y addon for @storybook/addon-vitest
+[10:20:07.814] [DEBUG] Executing command: npx storybook@10.4.6 automigrate addon-a11y-addon-test --loglevel silent --yes --skip-doctor --package-manager npm --skip-install
+[10:20:07.815] [DEBUG] Resolved command variation: npx.cmd
+[10:20:27.540] [INFO] a11y addon setup successfully
+[10:20:27.540] [INFO] [32ma11y addon setup successfully[39m
+[10:20:27.540] [INFO] [32m@storybook/addon-vitest setup completed successfully[39m
+[10:20:27.540] [INFO] @storybook/addon-vitest is now configured and you're ready to run your tests!
+Here are a couple of tips to get you started:
+
+• You can run tests with "[36mnpx vitest --project=storybook[39m"
+• Vitest IDE extension shows all stories as tests in your editor!
+
+Check the documentation for more information about its features and options at:
+https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
+[10:20:27.542] [INFO] @storybook/addon-vitest configured
+
+[10:20:27.542] [INFO] Configuring @storybook/addon-a11y...
+[10:20:27.542] [DEBUG] Executing command: npx storybook@10.4.6 automigrate addon-a11y-addon-test --loglevel silent --skip-doctor --yes --package-manager npm --config-dir .storybook
+[10:20:27.543] [DEBUG] Resolved command variation: npx.cmd
+[10:20:30.999] [INFO] @storybook/addon-a11y configured
+
+[10:20:30.999] [INFO] Configuring @storybook/addon-docs...
+[10:20:31.001] [INFO] @storybook/addon-docs configured
+
+[10:20:31.001] [INFO] Configuring @storybook/addon-mcp...
+[10:20:31.002] [INFO] @storybook/addon-mcp configured
+
+[10:20:31.002] [INFO] Addons configured successfully
+[10:20:31.002] [INFO] [2m✅ @chromatic-com/storybook[22m
+[10:20:31.002] [INFO] [2m✅ @storybook/addon-vitest[22m
+[10:20:31.002] [INFO] [2m✅ @storybook/addon-a11y[22m
+[10:20:31.002] [INFO] [2m✅ @storybook/addon-docs[22m
+[10:20:31.002] [INFO] [2m✅ @storybook/addon-mcp[22m
+[10:20:31.003] [INFO] Installing Playwright browser binaries (press "c" to abort)
+[10:20:31.003] [INFO] Installing Playwright browser binaries (press "c" to abort)
+[10:20:31.003] [DEBUG] Executing command: npx playwright install chromium --with-deps
+[10:20:31.004] [DEBUG] Resolved command variation: npx.cmd
+[10:20:31.925] [INFO] Playwright browser binaries installed successfully
+[10:20:31.925] [INFO] Playwright browser binaries installed successfully
+[10:20:32.770] [INFO] [38;2;255;71;133mStorybook is installed but is not entirely set up yet.
+To finish setting up, now run `npx storybook ai setup` and follow its instructions precisely.[39m
+[10:20:32.771] [INFO] To run Storybook, run [36mnpm run storybook[39m. CTRL+C to stop.
+[10:20:32.771] [INFO] Official documentation reference: [36mhttps://storybook.js.org/llms.txt[39m
+[10:20:32.771] [INFO] To finalize setting up with AI, paste this prompt to your AI agent:
+
+[38;2;255;71;133mRun `npx storybook ai setup` and follow its instructions precisely.[39m
+[10:20:34.131] [INFO] 

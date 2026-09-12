@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { baseQueryWithReauth } from '@/shared/api/baseQueryWithReauth';
+import { reauthBaseQuery } from '@/entities/auth';
 import { validateRequest, validateResponse } from '@/shared/lib/zod/apiValidation';
 import type { BusinessType } from '@/shared/config/businessTypes';
 import type { ClientDTO, ClientsDTO } from '../model/types';
@@ -17,7 +17,7 @@ export type UpdateClientRequest = ClientDTO & { type: BusinessType };
 
 export const clientsApi = createApi({
   reducerPath: 'clientsApi',
-  baseQuery: baseQueryWithReauth,
+  baseQuery: reauthBaseQuery,
   tagTypes: ['Client'],
   endpoints: (build) => ({
     getClients: build.query<ClientsDTO, BusinessType>({

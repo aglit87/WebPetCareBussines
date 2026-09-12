@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { baseQueryWithReauth } from '@/shared/api/baseQueryWithReauth';
+import { reauthBaseQuery } from '@/entities/auth';
 import { validateRequest, validateResponse } from '@/shared/lib/zod/apiValidation';
 import type { BusinessType } from '@/shared/config/businessTypes';
 import type { RoomDTO, RoomsDTO } from '../model/types';
@@ -17,7 +17,7 @@ export type UpdateRoomRequest = RoomDTO & { type: BusinessType };
 
 export const roomsApi = createApi({
   reducerPath: 'roomsApi',
-  baseQuery: baseQueryWithReauth,
+  baseQuery: reauthBaseQuery,
   tagTypes: ['Room'],
   endpoints: (build) => ({
     getRooms: build.query<RoomsDTO, BusinessType>({
