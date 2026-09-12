@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Icon, Button, Skeleton } from '@/shared/ui';
+import { Card, Icon, Skeleton, WidgetError, WidgetSkeleton } from '@/shared/ui';
 import { useGetReviewsQuery, type ReviewDTO } from '@/entities/reviews';
 import type { BusinessType } from '@/shared/config/businessTypes';
 import { ReviewReplyModal } from './ReviewReplyModal';
@@ -19,8 +19,27 @@ export const ReviewsWidget = ({ type }: { type: BusinessType }) => {
   const { data, isLoading, isError, refetch } = useGetReviewsQuery(type);
   const [editing, setEditing] = useState<ReviewDTO | undefined>(undefined);
 
-  if (isLoading) return <ReviewsSkeleton />;
-  if (isError || !data) return <ReviewsError onRetry={refetch} />;
+  if (isLoading) {
+    return (
+      <WidgetSkeleton>
+        <div className={styles.wrap}>
+          <Card padding={20}>
+            <Skeleton width={160} height={40} />
+          </Card>
+          <div className={styles.list}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Card key={i} padding={18}>
+                <Skeleton width="40%" height={16} style={{ marginBottom: 10 }} />
+                <Skeleton width="90%" height={13} style={{ marginBottom: 6 }} />
+                <Skeleton width="70%" height={13} />
+              </Card>
+            ))}
+          </div>
+        </div>
+      </WidgetSkeleton>
+    );
+  }
+  if (isError || !data) return <div className={styles.wrap}><WidgetError onRetry={refetch} /></div>;
 
   return (
     <div className={styles.wrap}>
@@ -61,40 +80,6 @@ export const ReviewsWidget = ({ type }: { type: BusinessType }) => {
         review={editing ?? null}
         onClose={() => setEditing(undefined)}
       />
-    </div>
-  );
-};
-
-const ReviewsError = ({ onRetry }: { onRetry: () => void }) => {
-  return (
-    <div className={styles.wrap}>
-      <div className={styles.state}>
-        <span className={styles.stateIcon} style={{ background: 'radial-gradient(circle at 50% 38%, #FCE4EC, #FFF1F5)' }}>
-          <Icon name="cloud_off" size={56} color="#EE7BA0" />
-        </span>
-        <div className={styles.stateTitle}>Нет соединения с сервером</div>
-        <div className={styles.stateText}>Проверьте подключение и попробуйте снова — данные сохранены.</div>
-        <Button size="lg" onClick={onRetry}><Icon name="refresh" size={19} />Повторить</Button>
-      </div>
-    </div>
-  );
-};
-
-const ReviewsSkeleton = () => {
-  return (
-    <div className={styles.wrap}>
-      <Card padding={20}>
-        <Skeleton width={160} height={40} />
-      </Card>
-      <div className={styles.list}>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Card key={i} padding={18}>
-            <Skeleton width="40%" height={16} style={{ marginBottom: 10 }} />
-            <Skeleton width="90%" height={13} style={{ marginBottom: 6 }} />
-            <Skeleton width="70%" height={13} />
-          </Card>
-        ))}
-      </div>
     </div>
   );
 };

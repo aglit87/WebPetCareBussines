@@ -10,7 +10,7 @@
 - **SCSS** (CSS-модули, токены в `app/styles`, тема через CSS custom properties)
 - **Redux Toolkit** — состояние бизнеса (`entities/business`)
 - **RTK Query** — загрузка данных дашборда (`entities/dashboard`)
-- **MSW** — мок API (`shared/api/mock`)
+- **MSW** — мок API (`src/mocks`)
 
 ## Архитектура — Feature-Sliced Design
 

@@ -1,4 +1,4 @@
-export { authReducer, credentialsRequested, otpVerified, tokensRefreshed, loggedOut } from './model/slice';
+export { authReducer, authInitialState, credentialsRequested, otpVerified, tokensRefreshed, loggedOut, passwordResetCompleted } from './model/slice';
 export {
   selectAuthUser,
   selectAccessToken,
@@ -18,6 +18,7 @@ export {
   useRefreshMutation,
   useLogoutMutation,
 } from './api/authApi';
+export { reauthBaseQuery } from './api/reauthBaseQuery';
 export type {
   RegisterRequest,
   LoginRequest,

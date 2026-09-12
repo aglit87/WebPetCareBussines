@@ -1,4 +1,4 @@
-import { Card, Badge, Icon, Button, Skeleton } from '@/shared/ui';
+import { Card, Badge, Icon, Skeleton, WidgetError, WidgetSkeleton } from '@/shared/ui';
 import { useGetDriversQuery, type DriverDTO, type DriverStatus } from '@/entities/drivers';
 import type { BusinessType } from '@/shared/config/businessTypes';
 import styles from './MapWidget.module.scss';
@@ -12,8 +12,23 @@ const STATUS_DOT: Record<DriverStatus, { color: string; label: string }> = {
 export const MapWidget = ({ type }: { type: BusinessType }) => {
   const { data, isLoading, isError, refetch } = useGetDriversQuery(type);
 
-  if (isLoading) return <MapSkeleton />;
-  if (isError || !data) return <MapError onRetry={refetch} />;
+  if (isLoading) {
+    return (
+      <WidgetSkeleton>
+        <div className={styles.wrap}>
+          <Card padding={0} className={styles.mapCard}>
+            <Skeleton height={320} radius={0} />
+          </Card>
+          <Card padding={16}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} height={44} radius={10} style={{ marginBottom: 10, opacity: 1 - i * 0.15 }} />
+            ))}
+          </Card>
+        </div>
+      </WidgetSkeleton>
+    );
+  }
+  if (isError || !data) return <div className={styles.wrap}><WidgetError onRetry={refetch} /></div>;
 
   const active: DriverDTO[] = data.drivers.filter((d) => d.status !== 'offline');
 
@@ -48,36 +63,6 @@ export const MapWidget = ({ type }: { type: BusinessType }) => {
             </div>
           ))}
         </div>
-      </Card>
-    </div>
-  );
-};
-
-const MapError = ({ onRetry }: { onRetry: () => void }) => {
-  return (
-    <div className={styles.wrap}>
-      <div className={styles.state}>
-        <span className={styles.stateIcon} style={{ background: 'radial-gradient(circle at 50% 38%, #FCE4EC, #FFF1F5)' }}>
-          <Icon name="cloud_off" size={56} color="#EE7BA0" />
-        </span>
-        <div className={styles.stateTitle}>Нет соединения с сервером</div>
-        <div className={styles.stateText}>Проверьте подключение и попробуйте снова — данные сохранены.</div>
-        <Button size="lg" onClick={onRetry}><Icon name="refresh" size={19} />Повторить</Button>
-      </div>
-    </div>
-  );
-};
-
-const MapSkeleton = () => {
-  return (
-    <div className={styles.wrap}>
-      <Card padding={0} className={styles.mapCard}>
-        <Skeleton height={320} radius={0} />
-      </Card>
-      <Card padding={16}>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} height={44} radius={10} style={{ marginBottom: 10, opacity: 1 - i * 0.15 }} />
-        ))}
       </Card>
     </div>
   );

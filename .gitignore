@@ -1,6 +1,8 @@
 node_modules
 dist
 dist-ssr
+storybook-static
+debug*.log
 *.local
 *.tsbuildinfo
 .DS_Store
