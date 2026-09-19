@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { baseQueryWithReauth } from '@/shared/api/baseQueryWithReauth';
+import { reauthBaseQuery } from '@/entities/auth';
 import { validateRequest, validateResponse } from '@/shared/lib/zod/apiValidation';
 import type { BusinessType } from '@/shared/config/businessTypes';
 import type { DriverDTO, DriversDTO } from '../model/types';
@@ -17,7 +17,7 @@ export type UpdateDriverRequest = DriverDTO & { type: BusinessType };
 
 export const driversApi = createApi({
   reducerPath: 'driversApi',
-  baseQuery: baseQueryWithReauth,
+  baseQuery: reauthBaseQuery,
   tagTypes: ['Driver'],
   endpoints: (build) => ({
     getDrivers: build.query<DriversDTO, BusinessType>({

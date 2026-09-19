@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Badge, Icon, Button, Skeleton } from '@/shared/ui';
+import { Card, Badge, Icon, Button, Skeleton, WidgetError, WidgetSkeleton } from '@/shared/ui';
 import { useGetRoomsQuery, type RoomDTO, type RoomStatus } from '@/entities/rooms';
 import type { BusinessType } from '@/shared/config/businessTypes';
 import { RoomFormModal } from './RoomFormModal';
@@ -15,8 +15,24 @@ export const RoomsWidget = ({ type }: { type: BusinessType }) => {
   const { data, isLoading, isError, refetch } = useGetRoomsQuery(type);
   const [editing, setEditing] = useState<RoomDTO | null | undefined>(undefined);
 
-  if (isLoading) return <RoomsSkeleton />;
-  if (isError || !data) return <RoomsError onRetry={refetch} />;
+  if (isLoading) {
+    return (
+      <WidgetSkeleton>
+        <div className={styles.wrap}>
+          <div className={styles.grid}>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Card key={i} padding={18}>
+                <Skeleton width="50%" height={16} style={{ marginBottom: 14 }} />
+                <Skeleton width="70%" height={12} style={{ marginBottom: 10 }} />
+                <Skeleton width="90%" height={12} />
+              </Card>
+            ))}
+          </div>
+        </div>
+      </WidgetSkeleton>
+    );
+  }
+  if (isError || !data) return <div className={styles.wrap}><WidgetError onRetry={refetch} /></div>;
 
   return (
     <div className={styles.wrap}>
@@ -69,37 +85,6 @@ const RoomsEmpty = () => {
       </span>
       <div className={styles.stateTitle}>Номера не настроены</div>
       <div className={styles.stateText}>Добавьте номера, чтобы принимать заезды питомцев.</div>
-    </div>
-  );
-};
-
-const RoomsError = ({ onRetry }: { onRetry: () => void }) => {
-  return (
-    <div className={styles.wrap}>
-      <div className={styles.state}>
-        <span className={styles.stateIcon} style={{ background: 'radial-gradient(circle at 50% 38%, #FCE4EC, #FFF1F5)' }}>
-          <Icon name="cloud_off" size={56} color="#EE7BA0" />
-        </span>
-        <div className={styles.stateTitle}>Нет соединения с сервером</div>
-        <div className={styles.stateText}>Проверьте подключение и попробуйте снова — данные сохранены.</div>
-        <Button size="lg" onClick={onRetry}><Icon name="refresh" size={19} />Повторить</Button>
-      </div>
-    </div>
-  );
-};
-
-const RoomsSkeleton = () => {
-  return (
-    <div className={styles.wrap}>
-      <div className={styles.grid}>
-        {Array.from({ length: 8 }).map((_, i) => (
-          <Card key={i} padding={18}>
-            <Skeleton width="50%" height={16} style={{ marginBottom: 14 }} />
-            <Skeleton width="70%" height={12} style={{ marginBottom: 10 }} />
-            <Skeleton width="90%" height={12} />
-          </Card>
-        ))}
-      </div>
     </div>
   );
 };

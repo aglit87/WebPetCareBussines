@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Badge, Icon, Button, Skeleton } from '@/shared/ui';
+import { Card, Badge, Icon, Button, Skeleton, WidgetError, WidgetSkeleton } from '@/shared/ui';
 import { useGetRecordsQuery, type RecordDTO, type RecordStatus } from '@/entities/records';
 import type { BusinessType } from '@/shared/config/businessTypes';
 import { RecordFormModal } from './RecordFormModal';
@@ -27,8 +27,21 @@ export const RecordsWidget = ({ type }: { type: BusinessType }) => {
   const { data, isLoading, isError, refetch } = useGetRecordsQuery(type);
   const [editing, setEditing] = useState<RecordDTO | null | undefined>(undefined);
 
-  if (isLoading) return <RecordsSkeleton />;
-  if (isError || !data) return <RecordsError onRetry={refetch} />;
+  if (isLoading) {
+    return (
+      <WidgetSkeleton>
+        <div className={styles.wrap}>
+          <Card padding={20}>
+            <Skeleton width={90} height={13} style={{ marginBottom: 16 }} />
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} height={52} radius={12} style={{ marginBottom: 12, opacity: 1 - i * 0.12 }} />
+            ))}
+          </Card>
+        </div>
+      </WidgetSkeleton>
+    );
+  }
+  if (isError || !data) return <div className={styles.wrap}><WidgetError onRetry={refetch} /></div>;
 
   const groups: Array<[string, RecordDTO[]]> = groupByDate(data.records);
 
@@ -82,34 +95,6 @@ const RecordsEmpty = () => {
       </span>
       <div className={styles.stateTitle}>Пока нет записей</div>
       <div className={styles.stateText}>Здесь появятся записи клиентов, как только они будут созданы.</div>
-    </div>
-  );
-};
-
-const RecordsError = ({ onRetry }: { onRetry: () => void }) => {
-  return (
-    <div className={styles.wrap}>
-      <div className={styles.state}>
-        <span className={styles.stateIcon} style={{ background: 'radial-gradient(circle at 50% 38%, #FCE4EC, #FFF1F5)' }}>
-          <Icon name="cloud_off" size={56} color="#EE7BA0" />
-        </span>
-        <div className={styles.stateTitle}>Нет соединения с сервером</div>
-        <div className={styles.stateText}>Проверьте подключение и попробуйте снова — данные сохранены.</div>
-        <Button size="lg" onClick={onRetry}><Icon name="refresh" size={19} />Повторить</Button>
-      </div>
-    </div>
-  );
-};
-
-const RecordsSkeleton = () => {
-  return (
-    <div className={styles.wrap}>
-      <Card padding={20}>
-        <Skeleton width={90} height={13} style={{ marginBottom: 16 }} />
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} height={52} radius={12} style={{ marginBottom: 12, opacity: 1 - i * 0.12 }} />
-        ))}
-      </Card>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAppSelector } from '@/shared/lib/hooks/redux';
 import { selectBusinessConfig, selectBusinessProfile, selectIsRegistered } from '@/entities/business';
+import { useGetDashboardQuery } from '@/entities/dashboard';
 import type { BusinessConfig, NavItem } from '@/shared/config/businessTypes';
 import { CabinetLayout } from '@/widgets/CabinetLayout';
 import { DashboardWidget } from '@/widgets/DashboardWidget';
@@ -50,10 +51,12 @@ export const CabinetPage = () => {
   const config = useAppSelector(selectBusinessConfig);
   const profile = useAppSelector(selectBusinessProfile);
   const [activeId, setActiveId] = useState<string>('overview');
+  const isOverview: boolean = activeId === 'overview';
+  // Подписка на дашборд для subtitle «Обзора»: кэш делится с DashboardWidget.
+  const dashboard = useGetDashboardQuery(config?.type ?? 'vet', { skip: !isOverview });
 
   if (!registered || !config) return <Navigate to="/register" replace />;
 
-  const isOverview: boolean = activeId === 'overview';
   const activeNav: NavItem | undefined = config.nav.find((n) => n.id === activeId);
   const businessName: string = profile?.name ?? config.noun;
   const section: JSX.Element | null = renderSection(activeId, config);
@@ -62,7 +65,7 @@ export const CabinetPage = () => {
     <CabinetLayout
       config={config}
       title={isOverview ? 'Обзор' : activeNav?.label ?? ''}
-      subtitle={isOverview ? `${businessName} · вторник, 24 июня` : `${config.label} · ${businessName}`}
+      subtitle={isOverview ? (dashboard.data?.subtitle ?? `${config.label} · ${businessName}`) : `${config.label} · ${businessName}`}
       activeId={activeId}
       onSelect={setActiveId}
     >
